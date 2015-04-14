@@ -1,0 +1,4 @@
+services:
+  plugin.manager.identity_channel:
+    class: Drupal\courier\IdentityChannelManager
+    parent: default_plugin_manager

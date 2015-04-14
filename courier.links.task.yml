@@ -1,0 +1,9 @@
+entity.courier_email.canonical:
+  route_name: entity.courier_email.canonical
+  base_route: entity.courier_email.canonical
+  title: 'View'
+
+entity.courier_email.edit_form:
+  route_name: entity.courier_email.edit_form
+  base_route: entity.courier_email.canonical
+  title: 'Edit'

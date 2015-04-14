@@ -1,0 +1,23 @@
+entity.courier_email.canonical:
+  path: '/courier/email/{courier_email}'
+  defaults:
+    _entity_view: 'courier_email'
+    _title: 'Email'
+  requirements:
+    _entity_access: 'courier_email.view'
+
+entity.courier_email.edit_form:
+  path: '/courier/email/{courier_email}/edit'
+  defaults:
+    _entity_form: 'courier_email.edit'
+    _title: 'Edit email'
+  requirements:
+    _entity_access: 'courier_email.update'
+
+entity.courier_email.delete_form:
+  path: '/courier/email/{courier_email}/delete'
+  defaults:
+    _entity_form: 'courier_email.delete'
+    _title: 'Delete email'
+  requirements:
+    _entity_access: 'courier_email.delete'
