@@ -1,0 +1,17 @@
+# Schema configuration file for courier module.
+
+courier.context.*:
+  type: config_entity
+  label: 'Courier context'
+  mapping:
+    id:
+      type: string
+      label: 'Machine-readable name'
+    label:
+      type: label
+      label: 'Name'
+    tokens:
+      type: sequence
+      label: 'Tokens'
+      sequence:
+        type: string

@@ -7,10 +7,12 @@
 
 namespace Drupal\courier;
 
+use Drupal\Core\Entity\EntityInterface;
+
 /**
- * Interface for message types.
+ * Defines an interface for channels (templates).
  */
-interface ChannelInterface {
+interface ChannelInterface extends EntityInterface {
 
   /**
    * Sends messages in bulk.
