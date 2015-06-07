@@ -30,8 +30,9 @@ class User implements IdentityChannelPluginInterface {
    */
   public function applyIdentity(ChannelInterface &$message, EntityInterface $identity) {
     /** @var \Drupal\user\UserInterface $identity */
-    $message->name->value = $identity->label();
-    $message->mail->value = $identity->getEmail();
+    /** @var \Drupal\courier\EmailInterface $message */
+    $message->setRecipientName($identity->label());
+    $message->setEmailAddress($identity->getEmail());
   }
 
 }

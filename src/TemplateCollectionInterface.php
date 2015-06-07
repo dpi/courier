@@ -96,4 +96,44 @@ interface TemplateCollectionInterface extends ContentEntityInterface {
    */
   function removeTemplate($channel_type_id);
 
+  /**
+   * Sets a token as required by the associated context.
+   *
+   * Token values are stored for the session, they are not saved.
+   *
+   * @param $token
+   *   The token type.
+   * @param $value
+   *   A token value.
+   *
+   * @return $this
+   *   Return this object for chaining.
+   */
+  function addTokenValue($token, $value);
+
+  /**
+   * Gets token values added to this collection.
+   *
+   * @param string|NULL $token
+   *   The token name, or all tokens if set to NULL.
+   *
+   * @return array|mixed
+   *   Token values keyed by token type, or a single token value.
+   */
+  function getTokenValues($token = NULL);
+
+  /**
+   * Locates the template collection which references a template.
+   *
+   * @param \Drupal\courier\ChannelInterface $template
+   *   A template entity.
+   *
+   * @return \Drupal\courier\Entity\TemplateCollection|NULL
+   *   A template collection entity, or NULL if the template is an orphan.
+   */
+  /**
+   * {@inheritdoc}
+   */
+  public static function getTemplateCollectionForTemplate(ChannelInterface $template);
+
 }

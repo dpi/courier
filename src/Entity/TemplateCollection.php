@@ -31,6 +31,13 @@ use Drupal\courier\ChannelInterface;
 class TemplateCollection extends ContentEntityBase implements TemplateCollectionInterface {
 
   /**
+   * Token values keyed by token type.
+   *
+   * @var array
+   */
+  protected $tokens = [];
+
+  /**
    * {@inheritdoc}
    */
   function getContext() {
@@ -106,6 +113,44 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
   /**
    * {@inheritdoc}
    */
+  function addTokenValue($token, $value) {
+    $this->tokens[$token] = $value;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function getTokenValues($token = NULL) {
+    if ($token) {
+      return isset($this->tokens[$token]) ? $this->tokens[$token] : NULL;
+    }
+    else {
+      return $this->tokens;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getTemplateCollectionForTemplate(ChannelInterface $template) {
+    $ids = \Drupal::entityManager()->getStorage('courier_template_collection')
+      ->getQuery()
+      ->condition('templates.target_type', $template->getEntityTypeId() , '=')
+      ->condition('templates.target_id', $template->id(), '=')
+      ->execute();
+
+    if ($ids) {
+      return \Drupal::entityManager()->getStorage('courier_template_collection')
+        ->load(reset($ids));
+    }
+
+    return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Template collection ID'))
@@ -114,9 +159,10 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
       ->setSetting('unsigned', TRUE);
 
     // Reference to a courier_context entity.
-    $fields['context'] = BaseFieldDefinition::create('dynamic_entity_reference')
+    // DER does not support string IDs (config entities)
+    $fields['context'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Context for templates.'))
-      ->setSetting('entity_type_ids', array('courier_context'))
+      ->setSetting('target_type', 'courier_context')
       ->setCardinality(1)
       ->setReadOnly(TRUE);
 
