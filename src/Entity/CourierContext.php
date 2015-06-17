@@ -50,7 +50,7 @@ class CourierContext extends ConfigEntityBase implements CourierContextInterface
    * {@inheritdoc}
    */
   function getTokens() {
-    return $this->tokens;
+    return array_merge($this->tokens, ['identity']);
   }
 
 }

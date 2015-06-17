@@ -131,9 +131,6 @@ interface TemplateCollectionInterface extends ContentEntityInterface {
    * @return \Drupal\courier\Entity\TemplateCollection|NULL
    *   A template collection entity, or NULL if the template is an orphan.
    */
-  /**
-   * {@inheritdoc}
-   */
   public static function getTemplateCollectionForTemplate(ChannelInterface $template);
 
 }

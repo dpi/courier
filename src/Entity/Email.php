@@ -9,7 +9,6 @@ namespace Drupal\courier\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\courier\EmailInterface;
-use Drupal\courier\ChannelInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 
@@ -41,7 +40,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   }
  * )
  */
-class Email extends ContentEntityBase implements EmailInterface, ChannelInterface {
+class Email extends ContentEntityBase implements EmailInterface {
 
   /**
    * Token values keyed by token type.

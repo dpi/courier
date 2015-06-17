@@ -29,6 +29,7 @@ class EmailForm extends ContentEntityForm {
    */
   public function form(array $form, FormStateInterface $form_state, EmailInterface $email = NULL) {
     $form = parent::form($form, $form_state, $email);
+    /** @var \Drupal\courier\Entity\Email $email */
     $email = $this->entity;
 
     if (!$email->isNew()) {
@@ -46,7 +47,6 @@ class EmailForm extends ContentEntityForm {
         $form['tokens']['list'] = [
           '#theme' => 'token_tree',
           '#token_types' => $context->getTokens(),
-          '#dialog' => TRUE,
         ];
       }
       else {

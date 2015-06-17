@@ -102,8 +102,12 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
     foreach ($this->getChannelsForIdentity($identity) as $channel) {
       if ($template = $template_collection->getTemplate($channel)) {
         if ($plugin = $this->getCourierIdentity($channel, $identity->getEntityTypeId())) {
-          $plugin->applyIdentity($template, $identity);
           $template->applyTokens($template_collection->getTokenValues());
+          // Identity
+          $template->applyTokens([
+            'identity' => $identity,
+          ]);
+          $plugin->applyIdentity($template, $identity);
           $template->sendMessage();
         }
       }
