@@ -44,9 +44,17 @@ interface IdentityChannelManagerInterface {
    * Gets all channel implementations.
    *
    * @return array
-   *   An array of channel entity type IDs, keyed by identity entity type ID.
+   *   Arrays of identity entity type IDs, keyed by channel entity type ID.
    */
   public function getChannels();
+
+  /**
+   * Gets all identity types.
+   *
+   * @return array
+   *   Arrays of identity entity type IDs.
+   */
+  public function getIdentityTypes();
 
   /**
    * Get channels supported for an identity entity type.

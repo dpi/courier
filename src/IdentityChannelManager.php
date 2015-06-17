@@ -66,24 +66,45 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
    * {@inheritdoc}
    */
   public function getChannels() {
-    $definitions = $this->getDefinitions();
-
-    $identities = [];
-    foreach ($definitions as $plugin_id => $plugin) {
+    $channels = [];
+    foreach ($this->getDefinitions() as $plugin_id => $plugin) {
       if ($plugin_id != 'broken') {
-        $identities[$plugin['identity']][] = $plugin['channel'];
+        $channel = $plugin['channel'];
+        $identity_type = $plugin['identity'];
+        if (!isset($channels[$channel]) || !in_array($identity_type, $channels[$channel])) {
+          $channels[$channel][] = $identity_type;
+        }
       }
     }
+    return $channels;
+  }
 
-    return $identities;
+  /**
+   * {@inheritdoc}
+   */
+  public function getIdentityTypes() {
+    $identity_types = [];
+    foreach ($this->getDefinitions() as $plugin_id => $plugin) {
+      if ($plugin_id != 'broken') {
+        if (!in_array($plugin['identity'], $identity_types)) {
+          $identity_types[] = $plugin['identity'];
+        }
+      }
+    }
+    return $identity_types;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getChannelsForIdentityType($identity_type_id) {
-    $channel_type_ids = $this->getChannels();
-    return isset($channel_type_ids[$identity_type_id]) ? $channel_type_ids[$identity_type_id] : [];
+    $channels = [];
+    foreach ($this->getChannels() as $channel => $identity_types) {
+      if (in_array($identity_type_id, $identity_types)) {
+        $channels[] = $channel;
+      }
+    }
+    return $channels;
   }
 
   /**
