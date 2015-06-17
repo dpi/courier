@@ -123,6 +123,14 @@ interface TemplateCollectionInterface extends ContentEntityInterface {
   function getTokenValues($token = NULL);
 
   /**
+   * Ensures tokens specified by context have values in this collection.
+   *
+   * @throws \Exception
+   *   Throws exception if there are missing values.
+   */
+  function validateTokenValues();
+
+  /**
    * Locates the template collection which references a template.
    *
    * @param \Drupal\courier\ChannelInterface $template

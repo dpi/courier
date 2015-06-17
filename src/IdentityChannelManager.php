@@ -99,6 +99,7 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
    * {@inheritdoc}
    */
   public function sendMessage(TemplateCollectionInterface $template_collection, EntityInterface $identity) {
+    $template_collection->validateTokenValues();
     foreach ($this->getChannelsForIdentity($identity) as $channel) {
       if ($template = $template_collection->getTemplate($channel)) {
         if ($plugin = $this->getCourierIdentity($channel, $identity->getEntityTypeId())) {
