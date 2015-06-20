@@ -111,7 +111,7 @@ class Email extends ContentEntityBase implements EmailInterface {
   /**
    * {@inheritdoc}
    */
-  public function applyTokens($tokens) {
+  public function applyTokens(array $tokens) {
     foreach ($tokens as $token => $value) {
       $this->tokens[$token] = $value;
     }
@@ -131,6 +131,10 @@ class Email extends ContentEntityBase implements EmailInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * @param array $options
+   *   Miscellaneous options.
+   *   - reply_to: reply-to email address, or leave unset to use site default.
    */
   static public function sendMessages(array $messages, $options = []) {
     /* @var \Drupal\courier\EmailInterface[] $messages */
@@ -151,13 +155,15 @@ class Email extends ContentEntityBase implements EmailInterface {
         ],
       ];
 
-      \Drupal::service('plugin.manager.mail')->mail(
+      /** @var \Drupal\Core\Mail\MailManagerInterface $mailman */
+      $mailman = \Drupal::service('plugin.manager.mail');
+      $mailman->mail(
         'system',
         'courier_email',
         $email_to,
         $message->language()->getId(),
         $params,
-        NULL
+        array_key_exists('reply_to', $options) ? $options['reply_to'] : NULL
       );
     }
   }
@@ -165,7 +171,7 @@ class Email extends ContentEntityBase implements EmailInterface {
   /**
    * {@inheritdoc}
    */
-  public function sendMessage($options = []) {
+  public function sendMessage(array $options = []) {
     $this->sendMessages([$this], $options);
   }
 

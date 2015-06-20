@@ -22,7 +22,7 @@ interface ChannelInterface extends EntityInterface {
    * @param array $tokens
    *   An array of tokens keyed by token type.
    */
-  public function applyTokens($tokens);
+  public function applyTokens(array $tokens);
 
   /**
    * Gets token values added to this channel.
@@ -51,6 +51,6 @@ interface ChannelInterface extends EntityInterface {
    * @param array $options
    *   Miscellaneous options to pass to the sender.
    */
-  public function sendMessage($options = []);
+  public function sendMessage(array $options = []);
 
 }
