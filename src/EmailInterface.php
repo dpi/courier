@@ -8,7 +8,6 @@
 namespace Drupal\courier;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\courier\ChannelInterface;
 
 /**
  * Provides an interface defining a courier_email entity.

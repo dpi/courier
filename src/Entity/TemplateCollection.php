@@ -149,18 +149,14 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
    * {@inheritdoc}
    */
   public static function getTemplateCollectionForTemplate(ChannelInterface $template) {
-    $ids = \Drupal::entityManager()->getStorage('courier_template_collection')
+    $ids = \Drupal::entityManager()
+      ->getStorage('courier_template_collection')
       ->getQuery()
       ->condition('templates.target_type', $template->getEntityTypeId() , '=')
       ->condition('templates.target_id', $template->id(), '=')
       ->execute();
 
-    if ($ids) {
-      return \Drupal::entityManager()->getStorage('courier_template_collection')
-        ->load(reset($ids));
-    }
-
-    return NULL;
+    return $ids ? static::load(reset($ids)) : NULL;
   }
 
   /**

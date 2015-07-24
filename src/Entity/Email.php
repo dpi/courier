@@ -7,7 +7,7 @@
 
 namespace Drupal\courier\Entity;
 
-use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\courier\ChannelBase;
 use Drupal\courier\EmailInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -40,14 +40,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *   }
  * )
  */
-class Email extends ContentEntityBase implements EmailInterface {
-
-  /**
-   * Token values keyed by token type.
-   *
-   * @var array
-   */
-  protected $tokens = [];
+class Email extends ChannelBase implements EmailInterface {
 
   /**
    * {@inheritdoc}
@@ -106,27 +99,6 @@ class Email extends ContentEntityBase implements EmailInterface {
    */
   public function setBody($body) {
     $this->set('body', ['value' => $body]);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function applyTokens(array $tokens) {
-    foreach ($tokens as $token => $value) {
-      $this->tokens[$token] = $value;
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  function getTokenValues($token = NULL) {
-    if ($token) {
-      return isset($this->tokens[$token]) ? $this->tokens[$token] : NULL;
-    }
-    else {
-      return $this->tokens;
-    }
   }
 
   /**
