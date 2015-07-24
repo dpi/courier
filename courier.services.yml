@@ -2,3 +2,7 @@ services:
   plugin.manager.identity_channel:
     class: Drupal\courier\IdentityChannelManager
     parent: default_plugin_manager
+  courier.manager:
+    class: Drupal\courier\Service\CourierManager
+    arguments: ['@entity.manager', '@plugin.manager.identity_channel']
+    parent: container.trait

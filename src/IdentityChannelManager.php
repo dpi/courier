@@ -119,29 +119,8 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
   /**
    * {@inheritdoc}
    */
-  public function sendMessage(TemplateCollectionInterface $template_collection, EntityInterface $identity, array $options = []) {
-    $template_collection->validateTokenValues();
-    $channel_options = isset($options['channels']) ? $options['channels'] : [];
-    unset($options['channels']);
-    foreach ($this->getChannelsForIdentity($identity) as $channel) {
-      if ($template = $template_collection->getTemplate($channel)) {
-        if ($plugin = $this->getCourierIdentity($channel, $identity->getEntityTypeId())) {
-          $template->applyTokens($template_collection->getTokenValues());
-          // Identity
-          $template->applyTokens([
-            'identity' => $identity,
-          ]);
-          $plugin->applyIdentity($template, $identity);
-
-          // Transform options based on channel
-          $options_new = $options;
-          if (array_key_exists($channel, $channel_options)) {
-            $options_new = array_merge($options, $channel_options[$channel]);
-          }
-          $template->sendMessage($options_new);
-        }
-      }
-    }
+  public function isTemplate(EntityInterface $entity) {
+    return in_array($entity->getEntityTypeId(), array_keys($this->getChannels()));
   }
 
 }
