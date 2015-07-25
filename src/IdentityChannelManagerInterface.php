@@ -81,6 +81,8 @@ interface IdentityChannelManagerInterface {
   /**
    * Determine if an entity is a template entity.
    *
+   * @deprecated: use instanceof ChannelInterface
+   *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   An entity, possibly a template.
    *

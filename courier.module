@@ -1,0 +1,20 @@
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\courier\Entity\TemplateCollection;
+use Drupal\courier\ChannelInterface;
+
+/**
+ * Implements hook_entity_predelete().
+ */
+function courier_entity_predelete(EntityInterface $entity) {
+  // Remove references from TemplateCollection when a Channel entity is deleted.
+  if ($entity instanceof ChannelInterface) {
+    /** ChannelInterface */
+    if ($collection = TemplateCollection::getTemplateCollectionForTemplate($entity)) {
+      $collection
+        ->removeTemplate($entity->getEntityTypeId())
+        ->save();
+    }
+  }
+}
