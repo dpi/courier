@@ -78,17 +78,4 @@ interface IdentityChannelManagerInterface {
    */
   public function getChannelsForIdentity(EntityInterface $identity);
 
-  /**
-   * Determine if an entity is a template entity.
-   *
-   * @deprecated: use instanceof ChannelInterface
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   An entity, possibly a template.
-   *
-   * @return bool
-   *   Whether the entity is a template entity.
-   */
-  public function isTemplate(EntityInterface $entity);
-
 }

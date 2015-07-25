@@ -116,11 +116,4 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
     return ['courier_email'];
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function isTemplate(EntityInterface $entity) {
-    return in_array($entity->getEntityTypeId(), array_keys($this->getChannels()));
-  }
-
 }
