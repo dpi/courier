@@ -15,6 +15,7 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\courier\CourierContextInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\courier\ChannelInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
  * Defines a courier_template_collection entity.
@@ -191,6 +192,22 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
       ->setReadOnly(TRUE);
 
     return $fields;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function preDelete(EntityStorageInterface $storage, array $entities) {
+    /** @var static[] $entities */
+    foreach ($entities as $template_collection) {
+      foreach ($template_collection->getTemplates() as $template) {
+        if ($template instanceof ChannelInterface) {
+          $template->delete();
+        }
+      }
+    }
+
+    parent::preDelete($storage, $entities);
   }
 
 }
