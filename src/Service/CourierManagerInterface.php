@@ -20,6 +20,8 @@ interface CourierManagerInterface {
   /**
    * Adds all available channel types to the template collection.
    *
+   * Does not replace templates for existing channel types.
+   *
    * @param \Drupal\courier\TemplateCollectionInterface $template_collection
    *   A template collection entity.
    */

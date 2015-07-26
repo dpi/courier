@@ -52,11 +52,13 @@ class CourierManager implements CourierManagerInterface {
    */
   public function addTemplates(TemplateCollectionInterface &$template_collection) {
     foreach (array_keys($this->identityChannelManager->getChannels()) as $entity_type_id) {
-      /** @var $template \Drupal\courier\ChannelInterface */
-      $template = $this->entityManager
-        ->getStorage($entity_type_id)
-        ->create();
-      $template_collection->setTemplate($template);
+      if (!$template_collection->getTemplate($entity_type_id)) {
+        /** @var $template \Drupal\courier\ChannelInterface */
+        $template = $this->entityManager
+          ->getStorage($entity_type_id)
+          ->create();
+        $template_collection->setTemplate($template);
+      }
     }
   }
 
