@@ -11,6 +11,7 @@ use Drupal\courier\ChannelBase;
 use Drupal\courier\EmailInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\courier\Exception\ChannelFailure;
 
 /**
  * Defines storage for a composed email.
@@ -103,6 +104,23 @@ class Email extends ChannelBase implements EmailInterface {
 
   /**
    * {@inheritdoc}
+   */
+  public function applyTokens() {
+    $tokens = $this->getTokenValues();
+    $this->setSubject(\Drupal::token()->replace($this->getSubject(), $tokens));
+    $this->setBody(\Drupal::token()->replace($this->getBody(), $tokens));
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function isEmpty() {
+    return empty($this->getBody()) || empty($this->getSubject());
+  }
+
+  /**
+   * {@inheritdoc}
    *
    * @param array $options
    *   Miscellaneous options.
@@ -111,14 +129,11 @@ class Email extends ChannelBase implements EmailInterface {
   static public function sendMessages(array $messages, $options = []) {
     /* @var \Drupal\courier\EmailInterface[] $messages */
     foreach ($messages as $message) {
-      $tokens = $message->getTokenValues();
-      // @todo: Validate messages (ensure $this->email is set)
+      if (!$email = $message->getEmailAddress()) {
+        throw new ChannelFailure('Missing email address for email.');
+      }
       $name = $message->getRecipientName();
-      $email = $message->getEmailAddress();
       $email_to = !empty($name) ? "$name <$email>" : $email;
-
-      $message->setSubject(\Drupal::token()->replace($message->getSubject(), $tokens));
-      $message->setBody(\Drupal::token()->replace($message->getBody(), $tokens));
 
       $params = [
         'context' => [

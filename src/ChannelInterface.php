@@ -15,25 +15,33 @@ use Drupal\Core\Entity\EntityInterface;
 interface ChannelInterface extends EntityInterface {
 
   /**
-   * Saves tokens internally.
+   * Applies tokens to relevant fields.
    *
-   * Token replacement is done when the message is sent.
-   *
-   * @param array $tokens
-   *   An array of tokens keyed by token type.
+   * @return static
+   *   Return this instance for chaining.
    */
-  public function applyTokens(array $tokens);
+  public function applyTokens();
 
   /**
    * Gets token values added to this channel.
    *
-   * @param string|NULL $token
-   *   The token name, or all tokens if set to NULL.
-   *
    * @return array|mixed
-   *   Token values keyed by token type, or a single token value.
+   *   Get all tokens keyed by token type, or a single token value.
    */
-  function getTokenValues($token = NULL);
+  function getTokenValues();
+
+  /**
+   * Sets a value to a token type.
+   *
+   * @param string $token
+   *   A token type.
+   * @param mixed $value
+   *   The token value.
+   *
+   * @return static
+   *   Return this instance for chaining.
+   */
+  function setTokenValue($token, $value);
 
   /**
    * Sends messages in bulk.
@@ -42,6 +50,9 @@ interface ChannelInterface extends EntityInterface {
    *   An array of messages.
    * @param array $options
    *   Miscellaneous options.
+   *
+   * @throws \Drupal\courier\Exception\ChannelFailure
+   *   Throw if the message cannot be sent.
    */
   static public function sendMessages(array $messages, $options = []);
 
@@ -52,5 +63,14 @@ interface ChannelInterface extends EntityInterface {
    *   Miscellaneous options to pass to the sender.
    */
   public function sendMessage(array $options = []);
+
+  /**
+   * Determine if there is enough data to transmit a message.
+   *
+   * Ideally some validation should also be done on the entity form.
+   *
+   * @return bool
+   */
+  public function isEmpty();
 
 }

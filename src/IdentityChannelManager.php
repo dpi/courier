@@ -39,13 +39,9 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
    * {@inheritdoc}
    */
   public function getCourierIdentityPluginID($channel_type_id, $identity_type_id) {
-    $definitions = $this->getDefinitions();
-
-    foreach ($definitions as $plugin_id => $plugin) {
-      if ($plugin_id != 'broken') {
-        if (($plugin['channel'] == $channel_type_id) && ($identity_type_id == $plugin['identity'])) {
-          return $plugin_id;
-        }
+    foreach ($this->getNonFallbackDefinitions() as $plugin_id => $plugin) {
+      if (($plugin['channel'] == $channel_type_id) && ($identity_type_id == $plugin['identity'])) {
+        return $plugin_id;
       }
     }
 
@@ -67,13 +63,11 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
    */
   public function getChannels() {
     $channels = [];
-    foreach ($this->getDefinitions() as $plugin_id => $plugin) {
-      if ($plugin_id != 'broken') {
-        $channel = $plugin['channel'];
-        $identity_type = $plugin['identity'];
-        if (!isset($channels[$channel]) || !in_array($identity_type, $channels[$channel])) {
-          $channels[$channel][] = $identity_type;
-        }
+    foreach ($this->getNonFallbackDefinitions() as $plugin_id => $plugin) {
+      $channel = $plugin['channel'];
+      $identity_type = $plugin['identity'];
+      if (!isset($channels[$channel]) || !in_array($identity_type, $channels[$channel])) {
+        $channels[$channel][] = $identity_type;
       }
     }
     return $channels;
@@ -84,11 +78,9 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
    */
   public function getIdentityTypes() {
     $identity_types = [];
-    foreach ($this->getDefinitions() as $plugin_id => $plugin) {
-      if ($plugin_id != 'broken') {
-        if (!in_array($plugin['identity'], $identity_types)) {
-          $identity_types[] = $plugin['identity'];
-        }
+    foreach ($this->getNonFallbackDefinitions() as $plugin_id => $plugin) {
+      if (!in_array($plugin['identity'], $identity_types)) {
+        $identity_types[] = $plugin['identity'];
       }
     }
     return $identity_types;
@@ -113,7 +105,20 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
   public function getChannelsForIdentity(EntityInterface $identity) {
     // @todo: Determine channel preference for $identity, or site default.
     // GH-2 | https://github.com/dpi/courier/issues/2
+    //return ['steam_vent_message', 'courier_email'];
     return ['courier_email'];
+  }
+
+  /**
+   * Get a list of non-broken plugins.
+   *
+   * @return array
+   *   A list of IdentityChannel plugins keyed by plugin ID.
+   */
+  protected function getNonFallbackDefinitions() {
+    $definitions = $this->getDefinitions();
+    unset($definitions['broken']);
+    return $definitions;
   }
 
 }

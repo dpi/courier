@@ -24,22 +24,16 @@ abstract class ChannelBase extends ContentEntityBase implements ChannelInterface
   /**
    * {@inheritdoc}
    */
-  public function applyTokens(array $tokens) {
-    foreach ($tokens as $token => $value) {
-      $this->tokens[$token] = $value;
-    }
+  function getTokenValues() {
+    return $this->tokens;
   }
 
   /**
    * {@inheritdoc}
    */
-  function getTokenValues($token = NULL) {
-    if ($token) {
-      return isset($this->tokens[$token]) ? $this->tokens[$token] : NULL;
-    }
-    else {
-      return $this->tokens;
-    }
+  function setTokenValue($token, $value) {
+    $this->tokens[$token] = $value;
+    return $this;
   }
 
   /**

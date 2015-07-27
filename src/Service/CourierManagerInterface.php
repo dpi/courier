@@ -28,7 +28,10 @@ interface CourierManagerInterface {
   public function addTemplates(TemplateCollectionInterface &$template_collection);
 
   /**
-   * Determines channel preference for an identity and sends a message.
+   * Prepares messages for an identity and and queues them for transmission.
+   *
+   * Once this method is executed, responsibility for transmission is passed
+   * to Courier.
    *
    * @param \Drupal\courier\TemplateCollectionInterface $template_collection
    *   A template collection entity.

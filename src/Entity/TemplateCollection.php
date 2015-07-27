@@ -49,7 +49,7 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
    * {@inheritdoc}
    */
   function setContext(CourierContextInterface $entity) {
-    $this->set('context', array('entity' => $entity));
+    $this->set('context', ['entity' => $entity]);
     return $this;
   }
 
@@ -64,7 +64,7 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
    * {@inheritdoc}
    */
   function setOwner(EntityInterface $entity) {
-    $this->set('owner', array('entity' => $entity));
+    $this->set('owner', ['entity' => $entity]);
     return $this;
   }
 
@@ -201,9 +201,7 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
     /** @var static[] $entities */
     foreach ($entities as $template_collection) {
       foreach ($template_collection->getTemplates() as $template) {
-        if ($template instanceof ChannelInterface) {
-          $template->delete();
-        }
+        $template->delete();
       }
     }
 

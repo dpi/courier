@@ -12,6 +12,7 @@ use Drupal\courier\TemplateCollectionInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\courier\IdentityChannelManagerInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\courier\Entity\MessageQueueItem;
 
 /**
  * Courier manager.
@@ -66,28 +67,41 @@ class CourierManager implements CourierManagerInterface {
    * {@inheritdoc}
    */
   public function sendMessage(TemplateCollectionInterface $template_collection, EntityInterface $identity, array $options = []) {
-    // todo move to general CourierManager
     $template_collection->validateTokenValues();
-    $channel_options = isset($options['channels']) ? $options['channels'] : [];
-    unset($options['channels']);
+
+    $message_queue = MessageQueueItem::create()
+      ->setOptions($options)
+      ->setIdentity($identity);
+
+    // All templates are 'rendered' into messages in case preferred channels
+    // fail.
     foreach ($this->identityChannelManager->getChannelsForIdentity($identity) as $channel) {
       if ($template = $template_collection->getTemplate($channel)) {
         if ($plugin = $this->identityChannelManager->getCourierIdentity($channel, $identity->getEntityTypeId())) {
-          $template->applyTokens($template_collection->getTokenValues());
-          // Identity
-          $template->applyTokens([
-            'identity' => $identity,
-          ]);
-          $plugin->applyIdentity($template, $identity);
-
-          // Transform options based on channel
-          $options_new = $options;
-          if (array_key_exists($channel, $channel_options)) {
-            $options_new = array_merge($options, $channel_options[$channel]);
+          $message = $template->createDuplicate();
+          if ($message->id()) {
+            throw new \Exception(sprintf('Failed to clone `%s`', $channel));
           }
-          $template->sendMessage($options_new);
+
+          $plugin->applyIdentity($message, $identity);
+          foreach ($template_collection->getTokenValues() as $token => $value) {
+            $message->setTokenValue($token, $value);
+          }
+          $message
+            ->setTokenValue('identity', $identity)
+            ->applyTokens()
+            ->save();
+
+          $message_queue->addMessage($message);
         }
       }
+    }
+
+    if ($message_queue->getMessages()) {
+      $message_queue->save();
+      //@todo remove:
+      $message_queue->sendMessage();
+      $message_queue->delete();
     }
   }
 
