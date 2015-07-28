@@ -48,6 +48,18 @@ class MessageQueueItem extends ContentEntityBase implements MessageQueueItemInte
   /**
    * {@inheritdoc}
    */
+  function getMessage($entity_type_id) {
+    foreach ($this->getMessages() as $message) {
+      if ($message->getEntityTypeId() == $entity_type_id) {
+        return $message;
+      }
+    }
+    return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getMessages() {
     return $this->messages->referencedEntities();
   }
@@ -98,7 +110,20 @@ class MessageQueueItem extends ContentEntityBase implements MessageQueueItemInte
     $channel_options = array_key_exists('channels', $options) ? $options['channels'] : [];
     unset($options['channels']);
 
-    foreach ($this->getMessages() as $message) {
+    /** @var \Drupal\courier\IdentityChannelManagerInterface $icm */
+    $icm = \Drupal::service('plugin.manager.identity_channel');
+
+    // Instead of iterating over messages, get the identity' channel preferences
+    // again. This ensures preference order is up to date since significant time
+    // may have passed since adding to queue.
+    $messages = [];
+    foreach ($icm->getChannelsForIdentity($this->getIdentity()) as $channel) {
+      if ($message = $this->getMessage($channel)) {
+        $messages[] = $message;
+      }
+    }
+
+    foreach ($messages as $message) {
       $message_options = $options;
       // Transform options based on channel
       $channel = $message->getEntityTypeId();

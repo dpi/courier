@@ -21,6 +21,8 @@ interface MessageQueueItemInterface extends ContentEntityInterface {
   public function getIdentity();
   public function setIdentity(EntityInterface $identity);
 
+  function getMessage($entity_type_id);
+
   /**
    * The order of the messages is meaningful. The first successful message in
    * the list will terminate the remaining messages.
