@@ -99,9 +99,10 @@ class CourierManager implements CourierManagerInterface {
 
     if ($message_queue->getMessages()) {
       $message_queue->save();
-      //@todo remove:
-      $message_queue->sendMessage();
-      $message_queue->delete();
+      $queue = \Drupal::queue('courier_message');
+      $queue->createItem([
+        'id' => $message_queue->id(),
+      ]);
     }
   }
 
