@@ -123,6 +123,7 @@ class MessageQueueItem extends ContentEntityBase implements MessageQueueItemInte
       }
     }
 
+    /** @var ChannelInterface[] $messages */
     foreach ($messages as $message) {
       $message_options = $options;
       // Transform options based on channel

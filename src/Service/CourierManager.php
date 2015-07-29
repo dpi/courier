@@ -13,7 +13,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\courier\IdentityChannelManagerInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\courier\Entity\MessageQueueItem;
-
+use Drupal\courier\Exception\IdentityException;
 /**
  * Courier manager.
  */
@@ -83,10 +83,17 @@ class CourierManager implements CourierManagerInterface {
             throw new \Exception(sprintf('Failed to clone `%s`', $channel));
           }
 
-          $plugin->applyIdentity($message, $identity);
+          try {
+            $plugin->applyIdentity($message, $identity);
+          }
+          catch (IdentityException $e) {
+            continue;
+          }
+
           foreach ($template_collection->getTokenValues() as $token => $value) {
             $message->setTokenValue($token, $value);
           }
+
           $message
             ->setTokenValue('identity', $identity)
             ->applyTokens()
