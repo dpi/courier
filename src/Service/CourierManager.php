@@ -73,6 +73,10 @@ class CourierManager implements CourierManagerInterface {
       ->setOptions($options)
       ->setIdentity($identity);
 
+    $t_args = [
+      '%identity' => $identity->label(),
+    ];
+
     // All templates are 'rendered' into messages in case preferred channels
     // fail.
     $templates = [];
@@ -83,6 +87,7 @@ class CourierManager implements CourierManagerInterface {
     }
 
     foreach ($templates as $channel => $template) {
+      $t_args['%channel'] = $channel;
       if ($plugin = $this->identityChannelManager->getCourierIdentity($channel, $identity->getEntityTypeId())) {
         $message = $template->createDuplicate();
         if ($message->id()) {
@@ -93,6 +98,7 @@ class CourierManager implements CourierManagerInterface {
           $plugin->applyIdentity($message, $identity);
         }
         catch (IdentityException $e) {
+          \Drupal::logger('courier')->debug('Identity %identity could not be applied to %channel.', $t_args);
           continue;
         }
 
@@ -107,6 +113,7 @@ class CourierManager implements CourierManagerInterface {
 
         $message_queue->addMessage($message);
       }
+      unset($t_args['%channel']);
     }
 
     if ($message_queue->getMessages()) {
@@ -115,14 +122,11 @@ class CourierManager implements CourierManagerInterface {
       $queue->createItem([
         'id' => $message_queue->id(),
       ]);
+      return $message_queue;
     }
-    else {
-      \Drupal::logger('courier')->info('No message was sent to @label. Identity type: @entity_type_id: @entity_id. No valid messages were generated.', [
-        '@label' => $identity->label(),
-        '@entity_type_id' => $identity->getEntityTypeId(),
-        '@entity_id' => $identity->id(),
-      ]);
-    }
+
+    \Drupal::logger('courier')->info('No messages could be sent to %identity. No messages were generated.', $t_args);
+    return FALSE;
   }
 
 }

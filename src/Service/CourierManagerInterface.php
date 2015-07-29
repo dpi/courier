@@ -57,6 +57,9 @@ interface CourierManagerInterface {
    *     'foo' => 456,
    *   ];
    * @endcode
+   *
+   * @return \Drupal\courier\MessageQueueItemInterface|FALSE
+   *   A message queue item entity, or FALSE if no messages could be generated.
    */
   public function sendMessage(TemplateCollectionInterface $template_collection, EntityInterface $identity, array $options = []);
 
