@@ -75,32 +75,37 @@ class CourierManager implements CourierManagerInterface {
 
     // All templates are 'rendered' into messages in case preferred channels
     // fail.
+    $templates = [];
     foreach ($this->identityChannelManager->getChannelsForIdentity($identity) as $channel) {
       if ($template = $template_collection->getTemplate($channel)) {
-        if ($plugin = $this->identityChannelManager->getCourierIdentity($channel, $identity->getEntityTypeId())) {
-          $message = $template->createDuplicate();
-          if ($message->id()) {
-            throw new \Exception(sprintf('Failed to clone `%s`', $channel));
-          }
+        $templates[$channel] = $template;
+      }
+    }
 
-          try {
-            $plugin->applyIdentity($message, $identity);
-          }
-          catch (IdentityException $e) {
-            continue;
-          }
-
-          foreach ($template_collection->getTokenValues() as $token => $value) {
-            $message->setTokenValue($token, $value);
-          }
-
-          $message
-            ->setTokenValue('identity', $identity)
-            ->applyTokens()
-            ->save();
-
-          $message_queue->addMessage($message);
+    foreach ($templates as $channel => $template) {
+      if ($plugin = $this->identityChannelManager->getCourierIdentity($channel, $identity->getEntityTypeId())) {
+        $message = $template->createDuplicate();
+        if ($message->id()) {
+          throw new \Exception(sprintf('Failed to clone `%s`', $channel));
         }
+
+        try {
+          $plugin->applyIdentity($message, $identity);
+        }
+        catch (IdentityException $e) {
+          continue;
+        }
+
+        foreach ($template_collection->getTokenValues() as $token => $value) {
+          $message->setTokenValue($token, $value);
+        }
+
+        $message
+          ->setTokenValue('identity', $identity)
+          ->applyTokens()
+          ->save();
+
+        $message_queue->addMessage($message);
       }
     }
 
