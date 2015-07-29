@@ -126,7 +126,7 @@ class MessageQueueItem extends ContentEntityBase implements MessageQueueItemInte
     /** @var ChannelInterface[] $messages */
     foreach ($messages as $message) {
       $message_options = $options;
-      // Transform options based on channel
+      // Transform options based on channel.
       $channel = $message->getEntityTypeId();
       if (array_key_exists($channel, $channel_options)) {
         $message_options = array_merge($message_options, $channel_options[$channel]);

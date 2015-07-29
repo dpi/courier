@@ -11,7 +11,7 @@ use Drupal\Core\Entity\EntityInterface;
  * Implements hook_token_info().
  */
 function courier_token_info() {
-  // Token types
+  // Token types.
   $tokens['types']['identity'] = [
     'name' => t('Identities'),
     'description' => t('Tokens for identities.'),

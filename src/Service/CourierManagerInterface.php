@@ -43,7 +43,7 @@ interface CourierManagerInterface {
    *   key of the channel being transmitted to, and merge it into the base
    *   base array. The channels key will then be unset.
    *   e.g: Sending to the courier_email channel:
-   *   @code
+   * @code
    *   $options = [
    *     'my_option' => 123,
    *     'channels' => [
@@ -56,7 +56,7 @@ interface CourierManagerInterface {
    *     'my_option' => 123,
    *     'foo' => 456,
    *   ];
-   *   @endcode
+   * @endcode
    */
   public function sendMessage(TemplateCollectionInterface $template_collection, EntityInterface $identity, array $options = []);
 

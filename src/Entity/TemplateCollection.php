@@ -95,7 +95,7 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
     $this->removeTemplate($template->getEntityTypeId());
     // Replace this line after https://www.drupal.org/node/2473931 :
     $this->templates[] = $template;
-    //$this->templates->appendItem($template);
+    // $this->templates->appendItem($template);
     return $this;
   }
 
@@ -153,7 +153,7 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
     $ids = \Drupal::entityManager()
       ->getStorage('courier_template_collection')
       ->getQuery()
-      ->condition('templates.target_type', $template->getEntityTypeId() , '=')
+      ->condition('templates.target_type', $template->getEntityTypeId(), '=')
       ->condition('templates.target_id', $template->id(), '=')
       ->execute();
 
@@ -171,7 +171,7 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
       ->setSetting('unsigned', TRUE);
 
     // Reference to a courier_context entity.
-    // DER does not support string IDs (config entities)
+    // DER does not support string IDs (config entities).
     $fields['context'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Context for templates.'))
       ->setSetting('target_type', 'courier_context')
