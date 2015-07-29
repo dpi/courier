@@ -110,7 +110,7 @@ class MessageQueueItem extends ContentEntityBase implements MessageQueueItemInte
     $channel_options = array_key_exists('channels', $options) ? $options['channels'] : [];
     unset($options['channels']);
 
-    /** @var \Drupal\courier\IdentityChannelManagerInterface $icm */
+    /** @var \Drupal\courier\Service\IdentityChannelManagerInterface $icm */
     $icm = \Drupal::service('plugin.manager.identity_channel');
 
     // Instead of iterating over messages, get the identity' channel preferences

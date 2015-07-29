@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\courier\IdentityChannelManager.
+ * Contains \Drupal\courier\Service\IdentityChannelManager.
  */
 
-namespace Drupal\courier;
+namespace Drupal\courier\Service;
 
 use Drupal\Component\Plugin\FallbackPluginManagerInterface;
 use Drupal\Core\Cache\CacheBackendInterface;

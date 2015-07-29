@@ -2,10 +2,10 @@
 
 /**
  * @file
- * Contains \Drupal\courier\IdentityChannelManagerInterface.
+ * Contains \Drupal\courier\Service\IdentityChannelManagerInterface.
  */
 
-namespace Drupal\courier;
+namespace Drupal\courier\Service;
 
 use Drupal\Core\Entity\EntityInterface;
 

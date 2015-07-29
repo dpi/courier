@@ -7,12 +7,12 @@
 
 namespace Drupal\courier;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
 
 /**
  * Defines an interface for channels (templates).
  */
-interface ChannelInterface extends EntityInterface {
+interface ChannelInterface extends FieldableEntityInterface {
 
   /**
    * Applies tokens to relevant fields.

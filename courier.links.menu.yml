@@ -7,4 +7,4 @@ courier.config:
   title: 'Courier settings'
   parent: system.admin_config_communication
   description: 'Manage Courier settings.'
-  route_name: courier.configs
+  route_name: courier.config

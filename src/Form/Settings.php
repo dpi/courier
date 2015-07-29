@@ -13,7 +13,7 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
-use Drupal\courier\IdentityChannelManager;
+use Drupal\courier\Service\IdentityChannelManager;
 
 /**
  * Configure Courier settings.
@@ -30,7 +30,7 @@ class Settings extends ConfigFormBase {
   /**
    * The identity channel manager.
    *
-   * @var \Drupal\courier\IdentityChannelManager
+   * @var \Drupal\courier\Service\IdentityChannelManager
    */
   protected $identityChannelManager;
 
@@ -41,7 +41,7 @@ class Settings extends ConfigFormBase {
    *   The factory for configuration objects.
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
-   * @param \Drupal\courier\IdentityChannelManager $identity_channel_manager
+   * @param \Drupal\courier\Service\IdentityChannelManager $identity_channel_manager
    *   The identity channel manager.
    */
   public function __construct(ConfigFactoryInterface $config_factory, EntityManagerInterface $entity_manager, IdentityChannelManager $identity_channel_manager) {

@@ -10,7 +10,7 @@ namespace Drupal\courier\Service;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Drupal\courier\TemplateCollectionInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\courier\IdentityChannelManagerInterface;
+use Drupal\courier\Service\IdentityChannelManagerInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\courier\Entity\MessageQueueItem;
 use Drupal\courier\Exception\IdentityException;
@@ -31,7 +31,7 @@ class CourierManager implements CourierManagerInterface {
   /**
    * The identity channel manager.
    *
-   * @var \Drupal\courier\IdentityChannelManager
+   * @var \Drupal\courier\Service\IdentityChannelManager
    */
   protected $identityChannelManager;
 
@@ -40,7 +40,7 @@ class CourierManager implements CourierManagerInterface {
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
-   * @param \Drupal\courier\IdentityChannelManagerInterface $identity_channel_manager
+   * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    */
   public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManagerInterface $identity_channel_manager) {
