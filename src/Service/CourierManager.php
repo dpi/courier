@@ -73,12 +73,14 @@ class CourierManager implements CourierManagerInterface {
       ->setOptions($options)
       ->setIdentity($identity);
 
-    $t_args = [
+    $t_args_base = [
       '%identity' => $identity->label(),
+      '@template_collection' => $template_collection->id(),
     ];
 
     // All templates are 'rendered' into messages in case preferred channels
     // fail.
+    /** @var \Drupal\courier\ChannelInterface[] $templates */
     $templates = [];
     foreach ($this->identityChannelManager->getChannelsForIdentity($identity) as $channel) {
       if ($template = $template_collection->getTemplate($channel)) {
@@ -87,6 +89,8 @@ class CourierManager implements CourierManagerInterface {
     }
 
     foreach ($templates as $channel => $template) {
+      $t_args = $t_args_base;
+      $t_args['@template'] = $template->id();
       $t_args['%channel'] = $channel;
       if ($plugin = $this->identityChannelManager->getCourierIdentity($channel, $identity->getEntityTypeId())) {
         $message = $template->createDuplicate();
@@ -102,18 +106,29 @@ class CourierManager implements CourierManagerInterface {
           continue;
         }
 
+        if ($message->isEmpty()) {
+          \Drupal::logger('courier')->debug('Template @template for collection @template_collection was empty.', $t_args);
+          continue;
+        }
+
         foreach ($template_collection->getTokenValues() as $token => $value) {
           $message->setTokenValue($token, $value);
         }
 
         $message
           ->setTokenValue('identity', $identity)
-          ->applyTokens()
-          ->save();
+          ->applyTokens();
 
-        $message_queue->addMessage($message);
+        $violations = $message->validate();
+        if ($violations->count()) {
+          \Drupal::logger('courier')->debug('Template @template for collection @template_collection did not validate.', $t_args);
+          continue;
+        }
+
+        if ($message->save()) {
+          $message_queue->addMessage($message);
+        }
       }
-      unset($t_args['%channel']);
     }
 
     if ($message_queue->getMessages()) {
