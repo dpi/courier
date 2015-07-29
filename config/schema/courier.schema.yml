@@ -1,5 +1,19 @@
 # Schema configuration file for courier module.
 
+courier.settings:
+  type: mapping
+  label: 'Settings for Courier'
+  mapping:
+    channel_preferences:
+      type: sequence
+      label: 'Default channel preferences for identities'
+      sequence:
+        label: 'List of identities'
+        type: sequence
+        sequence:
+          type: string
+          label: 'List of channel entity types'
+
 courier.context.*:
   type: config_entity
   label: 'Courier context'

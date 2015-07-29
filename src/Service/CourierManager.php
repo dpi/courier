@@ -104,6 +104,13 @@ class CourierManager implements CourierManagerInterface {
         'id' => $message_queue->id(),
       ]);
     }
+    else {
+      \Drupal::logger('courier')->info('No message was sent to @label. Identity type: @entity_type_id: @entity_id. No valid messages were generated.', [
+        '@label' => $identity->label(),
+        '@entity_type_id' => $identity->getEntityTypeId(),
+        '@entity_id' => $identity->id(),
+      ]);
+    }
   }
 
 }

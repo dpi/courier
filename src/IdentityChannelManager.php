@@ -101,12 +101,23 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
 
   /**
    * {@inheritdoc}
+   *
+   * @todo: Determine channel preference for individual identities.
+   * GH-2 | https://github.com/dpi/courier/issues/2
    */
   public function getChannelsForIdentity(EntityInterface $identity) {
-    // @todo: Determine channel preference for $identity, or site default.
-    // GH-2 | https://github.com/dpi/courier/issues/2
-    //return ['steam_vent_message', 'courier_email'];
-    return ['courier_email'];
+    $preferences = \Drupal::config('courier.settings')
+      ->get('channel_preferences');
+
+    $identity_type = $identity->getEntityTypeId();
+    if (array_key_exists($identity_type, $preferences)) {
+      return array_intersect(
+        $preferences[$identity_type],
+        $this->getChannelsForIdentityType($identity_type)
+      );
+    }
+
+    return [];
   }
 
   /**

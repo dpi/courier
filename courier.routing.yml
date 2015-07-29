@@ -21,3 +21,19 @@ entity.courier_email.delete_form:
     _title: 'Delete email'
   requirements:
     _entity_access: 'courier_email.delete'
+
+courier.admin_config_communication:
+  path: '/admin/config/communication'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Communication'
+  requirements:
+    _permission: 'access administration pages'
+
+courier.config:
+  path: '/admin/config/communication/courier'
+  defaults:
+    _form: '\Drupal\courier\Form\Settings'
+    _title: 'Courier settings'
+  requirements:
+    _permission: 'administer courier'

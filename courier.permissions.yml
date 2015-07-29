@@ -1,0 +1,4 @@
+administer courier:
+  title: 'Administer Courier'
+  description: 'Manage settings for Courier.'
+  restrict access: TRUE
