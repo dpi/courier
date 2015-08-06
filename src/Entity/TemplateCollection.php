@@ -135,14 +135,16 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
    * {@inheritdoc}
    */
   function validateTokenValues() {
-    $existing_tokens = array_keys($this->getTokenValues());
-    $required_tokens = $this->getContext()->getTokens();
-    // Remove identity as it is supplied by courier.
-    $key = array_search('identity', $required_tokens);
-    unset($required_tokens[$key]);
-    $missing_tokens = array_diff_key($required_tokens, $existing_tokens);
-    if ($missing_tokens) {
-      throw new \Exception(sprintf('Missing tokens required by courier context: %s', implode(', ', $missing_tokens)));
+    if ($this->getContext()) {
+      $required_tokens = $this->getContext()->getTokens();
+      $existing_tokens = array_keys($this->getTokenValues());
+      // Remove identity as it is supplied by courier.
+      $key = array_search('identity', $required_tokens);
+      unset($required_tokens[$key]);
+      $missing_tokens = array_diff_key($required_tokens, $existing_tokens);
+      if ($missing_tokens) {
+        throw new \Exception(sprintf('Missing tokens required by courier context: %s', implode(', ', $missing_tokens)));
+      }
     }
   }
 
