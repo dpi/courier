@@ -17,4 +17,16 @@ function courier_entity_predelete(EntityInterface $entity) {
         ->save();
     }
   }
+
+  // Remove template collections if owner entity is deleted.
+  $template_collection_storage = \Drupal::entityManager()
+    ->getStorage('courier_template_collection');
+  $query = $template_collection_storage->getQuery();
+  $group = $query->andConditionGroup()
+    ->condition('owner__target_type', $entity->getEntityTypeId(), '=')
+    ->condition('owner__target_id', $entity->id(), '=');
+  $query->condition($group);
+  if ($ids = $query->execute()) {
+    $template_collection_storage->delete($template_collection_storage->loadMultiple($ids));
+  }
 }

@@ -12,6 +12,7 @@ use Drupal\simpletest\KernelTestBase;
 use Drupal\courier\Entity\TemplateCollection;
 use Drupal\user\Entity\User;
 use Drupal\courier\Entity\MessageQueueItem;
+use Drupal\entity_test\Entity\EntityTest;
 
 /**
  * Courier test.
@@ -25,7 +26,7 @@ class CourierTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['system', 'user', 'field', 'courier', 'dynamic_entity_reference', 'text', 'filter'];
+  public static $modules = ['system', 'user', 'field', 'courier', 'dynamic_entity_reference', 'text', 'filter', 'entity_test'];
 
   /**
    * @var \Drupal\Core\Entity\EntityInterface
@@ -33,15 +34,22 @@ class CourierTest extends KernelTestBase {
   protected $identity;
 
   /**
+   * @var \Drupal\courier\Service\CourierManagerInterface
+   */
+  protected $courierManager;
+
+  /**
    * Sets up the test.
    */
   protected function setUp() {
     parent::setUp();
+    $this->courierManager = \Drupal::service('courier.manager');
     $this->installSchema('system', ['queue']);
     $this->installEntitySchema('user');
     $this->installEntitySchema('courier_email');
     $this->installEntitySchema('courier_template_collection');
     $this->installEntitySchema('courier_message_queue_item');
+    $this->installEntitySchema('entity_test');
     $this->installConfig(['courier']);
 
     $this->config('system.mail')->set('interface.default', 'test_mail_collector')->save();
@@ -56,11 +64,12 @@ class CourierTest extends KernelTestBase {
   }
 
   function testCourier() {
-    /** @var \Drupal\courier\Service\CourierManagerInterface $courier_manager */
-    $courier_manager = \Drupal::service('courier.manager');
+    // Owner is auto saved by entity reference field.
+    $owner_entity = EntityTest::create();
 
-    $template_collection = TemplateCollection::create();
-    $courier_manager->addTemplates($template_collection);
+    $template_collection = TemplateCollection::create()
+      ->setOwner($owner_entity);
+    $this->courierManager->addTemplates($template_collection);
 
     // Saving collection should auto save templates (via entity_reference).
     // See DynamicEntityReferenceItem::preSave().
@@ -83,12 +92,14 @@ class CourierTest extends KernelTestBase {
     $this->assertEqual(count(MessageQueueItem::loadMultiple()), 0, 'There are no message queue items.');
 
     $options = [];
-    $courier_manager->sendMessage($template_collection, $this->identity, $options);
+    $this->courierManager->sendMessage($template_collection, $this->identity, $options);
 
     /** @var \Drupal\courier\MessageQueueItemInterface[] $mqi */
     $mqi = MessageQueueItem::loadMultiple();
     $this->assertEqual(count($mqi), 1, 'There is one message queue item.');
     /** @var \Drupal\courier\ChannelInterface[] $messages */
+    $this->assertTrue($mqi[1]->getIdentity()->id() == $this->identity->id(), 'Identity is identical.');
+    $this->assertTrue($mqi[1]->getOptions() == $options, 'Options are identical.');
     $messages = $mqi[1]->getMessages();
     $courier_email = $messages[0];
     $this->assertTrue($courier_email instanceof Email, 'Message 0 is a courier_email.');
@@ -109,6 +120,10 @@ class CourierTest extends KernelTestBase {
 
     $this->assertEqual(count(MessageQueueItem::loadMultiple()), 0, 'There are no message queue items.');
     $this->assertFalse(entity_load($courier_email->getEntityTypeId(), $courier_email->id()), 'courier_email is deleted.');
+
+    // Deleting owner entity deletes template collections
+    $owner_entity->delete();
+    $this->assertEqual(count(TemplateCollection::loadMultiple()), 0, 'Deleted template collection.');
   }
 
 }
