@@ -1,7 +1,7 @@
 # Schema configuration file for courier module.
 
 courier.settings:
-  type: mapping
+  type: config_object
   label: 'Settings for Courier'
   mapping:
     channel_preferences:
@@ -12,7 +12,7 @@ courier.settings:
         type: sequence
         sequence:
           type: string
-          label: 'List of channel entity types'
+          label: 'Channel entity type'
 
 courier.context.*:
   type: config_entity
