@@ -63,6 +63,11 @@ class CourierTest extends KernelTestBase {
       ->save();
   }
 
+  /**
+   * General API test.
+   *
+   * Creates a template collection and checks if user receives a message.
+   */
   function testCourier() {
     // Owner is auto saved by entity reference field.
     $owner_entity = EntityTest::create();
@@ -83,7 +88,7 @@ class CourierTest extends KernelTestBase {
     $this->assertFalse($courier_email->isNew(), 'Template is saved.');
     $this->assertTrue($courier_email instanceof Email, 'Template 0 is a courier_email.');
 
-    // message will not be added to queue if ->isEmpty()
+    // Message will not be added to queue if ->isEmpty()
     $courier_email->setSubject($this->randomMachineName());
     $courier_email->setBody('Greetings, [identity:label]');
     $courier_email->save();
@@ -121,7 +126,7 @@ class CourierTest extends KernelTestBase {
     $this->assertEqual(count(MessageQueueItem::loadMultiple()), 0, 'There are no message queue items.');
     $this->assertFalse(entity_load($courier_email->getEntityTypeId(), $courier_email->id()), 'courier_email is deleted.');
 
-    // Deleting owner entity deletes template collections
+    // Deleting owner entity deletes template collections.
     $owner_entity->delete();
     $this->assertEqual(count(TemplateCollection::loadMultiple()), 0, 'Deleted template collection.');
   }

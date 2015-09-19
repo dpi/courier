@@ -38,16 +38,9 @@ trait TokenTrait {
 
   /**
    * Implements \Drupal\courier\TokenInterface::getTokenValues().
-   *
-   * //@todo remove param
    */
-  function getTokenValues($token = NULL) {
-    if ($token) {
-      return isset($this->tokens[$token]) ? $this->tokens[$token] : NULL;
-    }
-    else {
-      return $this->tokens;
-    }
+  function getTokenValues() {
+    return $this->tokens;
   }
 
   /**

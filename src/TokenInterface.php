@@ -17,13 +17,10 @@ interface TokenInterface {
   /**
    * Gets token values.
    *
-   * @param string|NULL $token
-   *   The token name, or all tokens if set to NULL.
-   * @todo remove multi param
-   * @return array|mixed
-   *   Token values keyed by token type, or a single token value.
+   * @return array
+   *   Token values keyed by token type.
    */
-  function getTokenValues($token = NULL);
+  function getTokenValues();
 
   /**
    * Sets a value to a token type.
