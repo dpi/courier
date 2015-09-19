@@ -1,0 +1,35 @@
+courier_system.settings:
+  type: config_object
+  label: 'Courier System Override settings'
+  mapping:
+    master:
+      type: boolean
+      label: 'Enable Courier System override'
+    override:
+      type: mapping
+      label: 'Override system mails'
+      mapping:
+        user_cancel_confirm:
+          type: boolean
+          label: 'Account cancellation confirmation'
+        user_password_reset:
+          type: boolean
+          label: 'Notify user when password reset'
+        user_status_activated:
+          type: boolean
+          label: 'Notify user when account is activated'
+        user_status_blocked:
+          type: boolean
+          label: 'Account blocked'
+        user_status_canceled:
+          type: boolean
+          label: 'Account canceled'
+        user_register_admin_created:
+          type: boolean
+          label: 'Welcome (new user created by administrator)'
+        user_register_no_approval_required:
+          type: boolean
+          label: 'Welcome (no approval required)'
+        user_register_pending_approval:
+          type: boolean
+          label: 'Welcome (awaiting approval)'

@@ -16,6 +16,8 @@ use Drupal\courier\CourierContextInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\courier\ChannelInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\courier\TokenInterface;
+use Drupal\courier\TokenTrait;
 
 /**
  * Defines a courier_template_collection entity.
@@ -31,12 +33,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
  */
 class TemplateCollection extends ContentEntityBase implements TemplateCollectionInterface {
 
-  /**
-   * Token values keyed by token type.
-   *
-   * @var array
-   */
-  protected $tokens = [];
+  use TokenTrait;
 
   /**
    * {@inheritdoc}
@@ -109,26 +106,6 @@ class TemplateCollection extends ContentEntityBase implements TemplateCollection
       }
     }
     return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  function addTokenValue($token, $value) {
-    $this->tokens[$token] = $value;
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  function getTokenValues($token = NULL) {
-    if ($token) {
-      return isset($this->tokens[$token]) ? $this->tokens[$token] : NULL;
-    }
-    else {
-      return $this->tokens;
-    }
   }
 
   /**

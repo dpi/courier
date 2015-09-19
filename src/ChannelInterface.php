@@ -12,7 +12,7 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 /**
  * Defines an interface for channels (templates).
  */
-interface ChannelInterface extends FieldableEntityInterface {
+interface ChannelInterface extends FieldableEntityInterface, TokenInterface {
 
   /**
    * Applies tokens to relevant fields.
@@ -21,27 +21,6 @@ interface ChannelInterface extends FieldableEntityInterface {
    *   Return this instance for chaining.
    */
   public function applyTokens();
-
-  /**
-   * Gets token values added to this channel.
-   *
-   * @return array|mixed
-   *   Get all tokens keyed by token type, or a single token value.
-   */
-  function getTokenValues();
-
-  /**
-   * Sets a value to a token type.
-   *
-   * @param string $token
-   *   A token type.
-   * @param mixed $value
-   *   The token value.
-   *
-   * @return static
-   *   Return this instance for chaining.
-   */
-  function setTokenValue($token, $value);
 
   /**
    * Sends messages in bulk.

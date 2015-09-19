@@ -1,0 +1,38 @@
+<?php
+
+use Drupal\user\Entity\User;
+use Drupal\courier\Entity\TemplateCollection;
+
+/**
+ * Implements hook_mail_alter().
+ */
+function courier_system_mail_alter(&$message) {
+  $mail_id = $message['id'];
+  $settings = \Drupal::config('courier_system.settings');
+  $override = $settings->get('override');
+
+  if ($settings->get('master') && !empty($override[$mail_id])) {
+    // Cancel sending.
+    $message['send'] = FALSE;
+
+    $template_collection_ids = \Drupal::state()->get('courier_system_template_collections', []);
+    /** @var \Drupal\courier\TemplateCollectionInterface $template_collection */
+    if (array_key_exists($mail_id, $template_collection_ids) && ($template_collection = TemplateCollection::load($template_collection_ids[$mail_id]))) {
+      // _user_mail_notify() adds account param.
+      // Only valid for user.module mails.
+      /** @var \Drupal\Core\Session\AccountInterface $account */
+      $account = $message['params']['account'];
+      /** @var User $identity */
+      $identity = User::load($account->id());
+      $template_collection
+        ->setTokenValue('user', $identity)
+        // Required to add [user:one-time-login-url], [user:cancel-url] tokens:
+        // @see user_mail_tokens().
+        ->setTokenOption('callback', 'user_mail_tokens');
+
+      /** @var \Drupal\courier\Service\CourierManagerInterface $courier_manager */
+      $courier_manager = \Drupal::service('courier.manager');
+      $courier_manager->sendMessage($template_collection, $identity);
+    }
+  }
+}

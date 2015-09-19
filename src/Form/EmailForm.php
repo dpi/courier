@@ -42,19 +42,29 @@ class EmailForm extends ContentEntityForm {
       '#weight' => 51,
     ];
     $template_collection = TemplateCollection::getTemplateCollectionForTemplate($email);
-    if ($context = $template_collection->getContext()) {
-      if ($this->moduleHandler->moduleExists('token')) {
-        $form['tokens']['list'] = [
-          '#theme' => 'token_tree',
-          '#token_types' => $context->getTokens(),
-        ];
-      }
-      else {
-        $form['tokens']['list'] = [
-          '#markup' => $this->t('Available tokens: @token_types', ['@token_types' => implode(', ', $context->getTokens())]),
-        ];
-      }
+
+    $tokens = ($context = $template_collection->getContext()) ? $context->getTokens() : [];
+
+    if ($this->moduleHandler->moduleExists('token')) {
+      $form['tokens']['list'] = [
+        '#theme' => 'token_tree',
+        '#token_types' => $tokens,
+      ];
     }
+    else {
+      // Add global token types.
+      $token_info = \Drupal::token()->getInfo();
+      foreach ($token_info['types'] as $type => $type_info) {
+        if (empty($type_info['needs-data'])) {
+          $tokens[] = $type;
+        }
+      }
+
+      $form['tokens']['list'] = [
+        '#markup' => $this->t('Available tokens: @token_types', ['@token_types' => implode(', ', $tokens)]),
+      ];
+    }
+
     $form['tokens']['help']['#markup'] = '<p>' . $this->t('Tokens are replaced in subject and body fields.') . '</p>';
 
     return $form;

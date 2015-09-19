@@ -114,6 +114,9 @@ class CourierManager implements CourierManagerInterface {
         foreach ($template_collection->getTokenValues() as $token => $value) {
           $message->setTokenValue($token, $value);
         }
+        foreach ($template_collection->getTokenOptions() as $token_option => $value) {
+          $message->setTokenOption($token_option, $value);
+        }
 
         $message
           ->setTokenValue('identity', $identity)

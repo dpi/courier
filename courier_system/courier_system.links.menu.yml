@@ -1,0 +1,5 @@
+courier_system.config:
+  title: 'Courier System settings'
+  parent: system.admin_config_communication
+  description: 'Manage Courier System settings.'
+  route_name: courier_system.config

@@ -100,6 +100,7 @@ class Email extends ChannelBase implements EmailInterface {
    */
   public function setBody($body) {
     $this->set('body', ['value' => $body]);
+    return $this;
   }
 
   /**
@@ -107,8 +108,9 @@ class Email extends ChannelBase implements EmailInterface {
    */
   public function applyTokens() {
     $tokens = $this->getTokenValues();
-    $this->setSubject(\Drupal::token()->replace($this->getSubject(), $tokens));
-    $this->setBody(\Drupal::token()->replace($this->getBody(), $tokens));
+    $options = $this->getTokenOptions();
+    $this->setSubject(\Drupal::token()->replace($this->getSubject(), $tokens, $options));
+    $this->setBody(\Drupal::token()->replace($this->getBody(), $tokens, $options));
     return $this;
   }
 

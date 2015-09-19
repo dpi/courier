@@ -14,27 +14,7 @@ use Drupal\Core\Entity\ContentEntityBase;
  */
 abstract class ChannelBase extends ContentEntityBase implements ChannelInterface {
 
-  /**
-   * Token values keyed by token type.
-   *
-   * @var array
-   */
-  protected $tokens = [];
-
-  /**
-   * {@inheritdoc}
-   */
-  function getTokenValues() {
-    return $this->tokens;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  function setTokenValue($token, $value) {
-    $this->tokens[$token] = $value;
-    return $this;
-  }
+  use TokenTrait;
 
   /**
    * {@inheritdoc}
