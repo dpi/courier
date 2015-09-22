@@ -1,0 +1,6 @@
+services:
+  access_check.courier_message_composer.compose:
+    class: Drupal\courier_message_composer\Access\ComposeAccessCheck
+    arguments: ['@plugin.manager.identity_channel']
+    tags:
+      - { name: access_check, applies_to: _courier_compose }

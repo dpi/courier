@@ -2,3 +2,7 @@ administer courier:
   title: 'Administer Courier'
   description: 'Manage settings for Courier.'
   restrict access: TRUE
+
+courier bypass queue:
+  title: 'Skip queue'
+  description: 'Gives users the option to skip the message queue and send the message in the same request. Using the bypass option can impact performance significantly.'

@@ -43,8 +43,7 @@ class EmailForm extends ContentEntityForm {
     ];
     $template_collection = TemplateCollection::getTemplateCollectionForTemplate($email);
 
-    $tokens = ($context = $template_collection->getContext()) ? $context->getTokens() : [];
-
+    $tokens = ($context = $template_collection->getContext()) ? $context->getTokens() : ['identity'];
     if ($this->moduleHandler->moduleExists('token')) {
       $form['tokens']['list'] = [
         '#theme' => 'token_tree',

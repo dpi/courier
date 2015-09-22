@@ -6,3 +6,9 @@ services:
     class: Drupal\courier\Service\CourierManager
     arguments: ['@entity.manager', '@plugin.manager.identity_channel']
     parent: container.trait
+  courier.paramconverter.channel:
+    class: Drupal\courier\ParamConverter\CourierChannelConverter
+    arguments: ['@entity.manager']
+    tags:
+      - { name: paramconverter }
+    lazy: true

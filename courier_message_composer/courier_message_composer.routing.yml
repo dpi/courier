@@ -1,0 +1,18 @@
+courier_message_composer.channel_list:
+  path: '/courier/compose'
+  defaults:
+    _title: 'New message'
+    _controller: '\Drupal\courier_message_composer\Controller\CourierMessageController::channelList'
+  requirements:
+    _courier_compose: '*'
+
+courier_message_composer.compose:
+  path: '/courier/compose/{courier_channel}'
+  defaults:
+    _form: '\Drupal\courier_message_composer\Form\MessageForm'
+  requirements:
+    _courier_compose: '{courier_channel}'
+  options:
+    parameters:
+      courier_channel:
+        type: 'courier_channel'

@@ -1,0 +1,6 @@
+name: Courier Message Composer
+type: module
+description: 'Allows you to send single one-off messages.'
+core: 8.x
+dependencies:
+  - courier

@@ -143,7 +143,7 @@ class CourierManager implements CourierManagerInterface {
       return $message_queue;
     }
 
-    \Drupal::logger('courier')->info('No messages could be sent to %identity. No messages were generated.', $t_args);
+    \Drupal::logger('courier')->info('No messages could be sent to %identity. No messages were generated.', $t_args_base);
     return FALSE;
   }
 

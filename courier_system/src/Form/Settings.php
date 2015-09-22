@@ -25,14 +25,14 @@ class Settings extends ConfigFormBase {
   /**
    * The entity type manager.
    *
-   * @var EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityManagerInterface
    */
   protected $entityManager;
 
   /**
    * The courier manager.
    *
-   * @var CourierManagerInterface
+   * @var \Drupal\courier\Service\CourierManagerInterface
    */
   protected $courierManager;
 
@@ -41,9 +41,9 @@ class Settings extends ConfigFormBase {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
-   * @param EntityManagerInterface $entity_manager
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
-   * @param CourierManagerInterface $courier_manager
+   * @param \Drupal\courier\Service\CourierManagerInterface $courier_manager
    *   The courier manager.
    */
   public function __construct(ConfigFactoryInterface $config_factory, EntityManagerInterface $entity_manager, CourierManagerInterface $courier_manager) {
