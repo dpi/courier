@@ -1,0 +1,15 @@
+courier.template_collection_list:
+  version: 0
+  css:
+    component:
+      css/template.collection.list.css: {}
+      css/semantic/components/menu.min.css: { minified: true }
+      css/semantic/components/segment.min.css: { minified: true }
+  js:
+    js/template.collection.list.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once
+    - core/drupal.ajax

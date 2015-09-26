@@ -1,0 +1,25 @@
+{
+  "base": "semantic/",
+  "paths": {
+    "source": {
+      "config": "src/theme.config",
+      "definitions": "src/definitions/",
+      "site": "src/site/",
+      "themes": "src/themes/"
+    },
+    "output": {
+      "packaged": "../css/semantic/",
+      "uncompressed": "../css/semantic/components/",
+      "compressed": "../css/semantic/components/",
+      "themes": "../css/semantic/themes/"
+    },
+    "clean": "dist/"
+  },
+  "permission": false,
+  "rtl": "both",
+  "components": [
+    "menu",
+    "segment"
+  ],
+  "version": "2.1.4"
+}

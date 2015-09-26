@@ -4,6 +4,8 @@ Copyright (C) 2015 Daniel Phin (@dpi)
 
 # License
 
+## Courier
+
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -17,6 +19,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+## Semantic UI
+
+The MIT License
+http://opensource.org/licenses/MIT
+
+Portions of [Semantic UI](http://semantic-ui.com/) are included with Courier.
+These files are licensed under The MIT License and are denoted with the heading
+'Semantic UI', accompanied by a copyright message, at the top of each file.
 
 # About
 
@@ -49,3 +60,13 @@ Please see the project websites for instructions:
 
  *  https://drupal.org/project/courier
  *  https://github.com/dpi/courier
+ 
+# Building
+
+## Semantic UI
+
+```sh
+npm install semantic-ui --save
+cd semantic
+gulp build
+```

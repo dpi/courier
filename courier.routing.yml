@@ -1,3 +1,17 @@
+entity.courier_template_collection.channel:
+  path: '/courier/collection/{courier_template_collection}/template/{courier_channel}'
+  defaults:
+    _controller: '\Drupal\courier\Controller\ChannelFormController::template'
+    _title: 'Edit template'
+  requirements:
+    _permission: 'administer courier'
+  options:
+    parameters:
+      courier_template_collection:
+        type: entity:courier_template_collection
+      courier_channel:
+        type: 'courier_channel'
+
 entity.courier_email.canonical:
   path: '/courier/email/{courier_email}'
   defaults:

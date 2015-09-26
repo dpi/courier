@@ -1,0 +1,58 @@
+.template_collection_list.checkboxes {
+  margin-left:2em;
+}
+
+.template_collection {
+  box-sizing:border-box;
+}
+
+.template_collection .ui.menu .header.item {
+  background-color: #FAFBFB;
+}
+
+.template_collection .ui.menu[class*="top attached"] {
+  margin-top: 0;
+  box-sizing: border-box;
+}
+
+.template_collection .form-checkbox {
+  float:left;
+  margin-left:-2em;
+  margin-top: .5em;
+}
+
+.template_collection ul.templates {
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+  display: flex;
+}
+
+.template_collection ul.templates li {
+  list-style:none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.template_collection ul.templates li a {
+  outline: none;
+  border: none;
+}
+
+.editor_container {
+  box-sizing: inherit;
+}
+
+.editor_container.ui.attached.segment {
+  background-color: #eee;
+}
+
+.editor.ui.segment {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.template_collection .dropbutton-wrapper {
+  float:right;
+}
