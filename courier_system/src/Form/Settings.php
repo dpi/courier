@@ -11,6 +11,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Render\Element;
 use Drupal\courier\Entity\CourierContext;
 use Drupal\courier\Entity\TemplateCollection;
 use Drupal\courier\Service\CourierManagerInterface;
@@ -183,7 +184,6 @@ class Settings extends ConfigFormBase {
     $form['add_missing'] = [
       '#type' => 'details',
       '#title' => $this->t('Add missing messages'),
-      '#open' => TRUE, // todo change false
     ];
     $form['add_missing']['table'] = [
       '#type' => 'table',
@@ -224,6 +224,9 @@ class Settings extends ConfigFormBase {
     }
 
     $form['add_missing']['#open'] = !count($form['list']['#items']);
+    if ($count = count(Element::children($form['add_missing']['table']))) {
+      $form['add_missing']['#title'] = $this->t('Add missing messages (@count)', ['@count' => $count]);
+    }
 
     return $form;
   }

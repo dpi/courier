@@ -32,9 +32,6 @@ class TemplateCollectionList extends FormElement {
       '#process' => array(
         [$class, 'processTemplateCollectionList'],
       ),
-      '#element_validate' => [
-        [$class, 'validateTemplateCollectionList'],
-      ],
       // Items can be any non-zero key. Forms will return this key for keys of
       // checkboxes in $form_element['checkboxes'].
       '#items' => [],
