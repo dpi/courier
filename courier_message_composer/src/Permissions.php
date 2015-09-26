@@ -11,7 +11,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Routing\UrlGeneratorTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Entity\EntityManagerInterface;
-use Drupal\courier\Service\IdentityChannelManager;
+use Drupal\courier\Service\IdentityChannelManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -41,10 +41,10 @@ class Permissions implements ContainerInjectionInterface {
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
-   * @param \Drupal\courier\Service\IdentityChannelManager $identity_channel_manager
+   * @param IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManager $identity_channel_manager) {
+  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManagerInterface $identity_channel_manager) {
     $this->entityManager = $entity_manager;
     $this->identityChannelManager = $identity_channel_manager;
   }

@@ -16,7 +16,7 @@ use Drupal\courier\TemplateCollectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
-use Drupal\courier\Service\IdentityChannelManager;
+use Drupal\courier\Service\IdentityChannelManagerInterface;
 use Drupal\courier\Service\CourierManagerInterface;
 
 /**
@@ -34,7 +34,7 @@ class TemplateEditForm extends FormBase {
   /**
    * The identity channel manager.
    *
-   * @var \Drupal\courier\Service\IdentityChannelManager
+   * @var \Drupal\courier\Service\IdentityChannelManagerInterface
    */
   protected $identityChannelManager;
 
@@ -50,12 +50,12 @@ class TemplateEditForm extends FormBase {
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
-   * @param \Drupal\courier\Service\IdentityChannelManager $identity_channel_manager
+   * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    * @param \Drupal\courier\Service\CourierManagerInterface $courier_manager
    *   The courier manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManager $identity_channel_manager, CourierManagerInterface $courier_manager) {
+  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManagerInterface $identity_channel_manager, CourierManagerInterface $courier_manager) {
     $this->entityManager = $entity_manager;
     $this->identityChannelManager = $identity_channel_manager;
     $this->courierManager = $courier_manager;

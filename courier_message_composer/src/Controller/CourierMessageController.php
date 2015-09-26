@@ -12,7 +12,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
-use Drupal\courier\Service\IdentityChannelManager;
+use Drupal\courier\Service\IdentityChannelManagerInterface;
 
 /**
  * Returns responses for CourierMessageController routes.
@@ -29,7 +29,7 @@ class CourierMessageController extends ControllerBase implements ContainerInject
   /**
    * The identity channel manager.
    *
-   * @var \Drupal\courier\Service\IdentityChannelManager
+   * @var \Drupal\courier\Service\IdentityChannelManagerInterface
    */
   protected $identityChannelManager;
 
@@ -38,10 +38,10 @@ class CourierMessageController extends ControllerBase implements ContainerInject
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
-   * @param \Drupal\courier\Service\IdentityChannelManager $identity_channel_manager
+   * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManager $identity_channel_manager) {
+  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManagerInterface $identity_channel_manager) {
     $this->entityManager = $entity_manager;
     $this->identityChannelManager = $identity_channel_manager;
   }

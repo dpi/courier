@@ -7,7 +7,7 @@
 
 namespace Drupal\courier_message_composer\Form;
 
-use Drupal\Core\Entity\ContentEntityType;
+use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormBase;
@@ -17,7 +17,7 @@ use Drupal\user\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
-use Drupal\courier\Service\IdentityChannelManager;
+use Drupal\courier\Service\IdentityChannelManagerInterface;
 use Drupal\courier\Service\CourierManagerInterface;
 
 /**
@@ -51,12 +51,12 @@ class MessageForm extends FormBase {
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
-   * @param \Drupal\courier\Service\IdentityChannelManager $identity_channel_manager
+   * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    * @param \Drupal\courier\Service\CourierManagerInterface $courier_manager
    *   The courier manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManager $identity_channel_manager, CourierManagerInterface $courier_manager) {
+  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManagerInterface $identity_channel_manager, CourierManagerInterface $courier_manager) {
     $this->entityManager = $entity_manager;
     $this->identityChannelManager = $identity_channel_manager;
     $this->courierManager = $courier_manager;
@@ -83,7 +83,7 @@ class MessageForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, ContentEntityType $courier_channel = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, ContentEntityTypeInterface $courier_channel = NULL) {
     $form['#title'] = $courier_channel->getLabel();
     $t_args = [
       '@channel' => $courier_channel->getLabel(),

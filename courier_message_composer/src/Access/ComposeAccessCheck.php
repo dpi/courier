@@ -12,7 +12,7 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\Routing\Route;
-use Drupal\courier\Service\IdentityChannelManager;
+use Drupal\courier\Service\IdentityChannelManagerInterface;
 
 /**
  * Checks new registrations are permitted on an event.
@@ -22,17 +22,17 @@ class ComposeAccessCheck implements AccessInterface {
   /**
    * The identity channel manager.
    *
-   * @var \Drupal\courier\Service\IdentityChannelManager
+   * @var \Drupal\courier\Service\IdentityChannelManagerInterface
    */
   protected $identityChannelManager;
 
   /**
    * Constructs a ComposeAccessCheck object.
    *
-   * @param \Drupal\courier\Service\IdentityChannelManager $identity_channel_manager
+   * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    */
-  public function __construct(IdentityChannelManager $identity_channel_manager) {
+  public function __construct(IdentityChannelManagerInterface $identity_channel_manager) {
     $this->identityChannelManager = $identity_channel_manager;
   }
 
