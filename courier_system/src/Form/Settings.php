@@ -87,14 +87,38 @@ class Settings extends ConfigFormBase {
    */
   protected function getSystemMails() {
     $options['user'] = [
-      'user_cancel_confirm' => $this->t('Account cancellation confirmation'),
-      'user_password_reset' => $this->t('Notify user when password reset'),
-      'user_status_activated' => $this->t('Notify user when account is activated'),
-      'user_status_blocked' => $this->t('Account blocked'),
-      'user_status_canceled' => $this->t('Account canceled'),
-      'user_register_admin_created' => $this->t('Welcome (new user created by administrator)'),
-      'user_register_no_approval_required' => $this->t('Welcome (no approval required)'),
-      'user_register_pending_approval' => $this->t('Welcome (awaiting approval)'),
+      'user_cancel_confirm' => [
+        'title' => $this->t('Account cancellation confirmation'),
+        'description' => $this->t('Sent to users when they attempt to cancel their accounts.'),
+      ],
+      'user_password_reset' => [
+        'title' => $this->t('Notify user when password reset'),
+        'description' => $this->t('Sent to users who request a new password.'),
+      ],
+      'user_status_activated' => [
+        'title' => $this->t('Notify user when account is activated'),
+        'description' => $this->t('Sent to users upon account activation (when an administrator activates an account of a user who has already registered, on a site where administrative approval is required)'),
+      ],
+      'user_status_blocked' => [
+        'title' => $this->t('Account blocked'),
+        'description' => $this->t('Sent to users when their accounts are blocked.'),
+      ],
+      'user_status_canceled' => [
+        'title' => $this->t('Account canceled'),
+        'description' => $this->t('Sent to users when they attempt to cancel their accounts.'),
+      ],
+      'user_register_admin_created' => [
+        'title' => $this->t('Welcome (new user created by administrator)'),
+        'description' => $this->t('Sent to new member accounts created by an administrator.'),
+      ],
+      'user_register_no_approval_required' => [
+        'title' => $this->t('Welcome (no approval required)'),
+        'description' => $this->t('Sent to new members upon registering, when no administrator approval is required.'),
+      ],
+      'user_register_pending_approval' => [
+        'title' => $this->t('Welcome (awaiting approval)'),
+        'description' => $this->t('Sent to new members upon registering, when administrative approval is required.'),
+      ],
     ];
     return $options;
   }
@@ -114,73 +138,92 @@ class Settings extends ConfigFormBase {
       '#title' => $this->t('Master enable'),
       '#type' => 'checkbox',
       '#default_value' => !empty($master),
+      '#weight' => -100,
+    ];
+
+    // Actions.
+    $form['actions'] = [
+      '#type' => 'details',
+      '#attributes' => [
+        'class' => ['container-inline'],
+      ],
+      '#open' => TRUE,
+    ];
+    $form['actions']['operation'] = [
+      '#title' => $this->t('With selection'),
+      '#type' => 'select',
+      '#options' => [
+        'copy_email' => $this->t('Copy Drupal email to Courier'),
+        'enable' => $this->t('Override Drupal email (enable selected)'),
+        'disable' => $this->t('Restore Drupal email (disable selected)'),
+        'delete' => $this->t('Delete'),
+      ],
+      '#empty_option' => $this->t(' - Select - '),
+      '#button_type' => 'primary',
+    ];
+    $form['actions']['apply'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Apply'),
+      '#button_type' => 'primary',
+    ];
+
+    // List items.
+    $form['list'] = [
+      '#type' => 'courier_template_collection_list',
+      '#title' => $this->t('Replace Drupal mails'),
+      '#checkboxes' => TRUE,
+      '#items' => [],
     ];
 
     $header = [
-      'override' => [
-        'data' => $this->t('Override System'),
-        'class' => ['checkbox'],
-      ],
       $this->t('Module'),
       $this->t('Description'),
-      $this->t('Template Collection ID'),
-      'copy_core' => [
-        'data' => $this->t('Copy core to mail template'),
-        'class' => ['checkbox'],
-      ],
     ];
 
-    $form['override'] = [
-      '#title' => $this->t('Replace Drupal mails'),
+    $form['add_missing'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Add missing messages'),
+      '#open' => TRUE, // todo change false
+    ];
+    $form['add_missing']['table'] = [
       '#type' => 'table',
       '#header' => $header,
       '#tree' => TRUE,
+      '#tableselect' => TRUE,
+      '#multiple' => TRUE,
+      '#empty' => $this->t('No messages are missing.'),
+    ];
+    $form['add_missing']['submit'] = [
+      '#type' => 'submit',
+      '#value' => t('Create messages'),
+      '#submit' => array(
+        [$this, 'submitCreateMessages'],
+      ),
     ];
 
     foreach ($this->getSystemMails() as $module => $mails) {
-      foreach ($mails as $mail_id => $title) {
-        $t_args = [
-          '@module' => $module,
-          '@id' => $mail_id,
-        ];
-        $row = [];
-
-        $row['override'] = [
-          '#type' => 'checkbox',
-          '#title' => $this->t('Override @id', $t_args),
-          '#title_display' => 'invisible',
-          '#default_value' => !empty($override[$mail_id]),
-          '#wrapper_attributes' => [
-            'class' => [
-              'checkbox',
-            ],
-          ],
-        ];
-        $row['cat']['#markup'] = $module;
-        $row['title']['#markup'] = $title;
-
-        if (array_key_exists($mail_id, $template_collection_ids)) {
-          $row['template_collection']['#markup'] = $template_collection_ids[$mail_id];
+      foreach ($mails as $mail_id => $definition) {
+        if (isset($template_collection_ids[$mail_id]) && $template_collection = TemplateCollection::load($template_collection_ids[$mail_id])) {
+          $form['list']['#items'][$mail_id] = [
+            '#title' => $this->t('@module: @title (@status)', [
+              '@title' => $definition['title'],
+              '@module' => \Drupal::moduleHandler()->getName($module),
+              '@status' => !empty($override[$mail_id]) ? $this->t('enabled - using Courier') : $this->t('disabled - using Drupal'),
+            ]),
+            '#description' => $definition['description'],
+            '#template_collection' => $template_collection,
+          ];
         }
         else {
-          $row['template_collection']['#markup'] = $this->t('None');
+          $row = [];
+          $row['module']['#markup'] = \Drupal::moduleHandler()->getName($module);
+          $row['title']['#markup'] = $definition['title'];
+          $form['add_missing']['table'][$mail_id] = $row;
         }
-
-        $row['copy_core'] = [
-          '#type' => 'checkbox',
-          '#title' => $this->t('Copy core email to Courier email template', $t_args),
-          '#title_display' => 'invisible',
-          '#default_value' => FALSE,
-          '#wrapper_attributes' => [
-            'class' => [
-              'checkbox',
-            ],
-          ],
-        ];
-
-        $form['override'][$mail_id] = $row;
       }
     }
+
+    $form['add_missing']['#open'] = !count($form['list']['#items']);
 
     return $form;
   }
@@ -189,75 +232,144 @@ class Settings extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $mails = $this->getSystemMails();
-    $template_collection_ids = \Drupal::state()->get('courier_system_template_collections', []);
+    $message = $this->t('No operations were executed.');
     $config = $this->config('courier_system.settings');
-    $override = [];
-    foreach ($form_state->getValue('override') as $mail_id => $row) {
-      if ($override[$mail_id] = !empty($row['override'])) {
-        $copy_core = !empty($row['copy_core']);
 
-        // Create Template Collection.
-        if (array_key_exists($mail_id, $template_collection_ids)) {
-          $template_collection = TemplateCollection::load($template_collection_ids[$mail_id]);
+    // Template collections keyed by mail ID.
+    /** @var TemplateCollectionInterface[] $template_collections */
+    $template_collections = [];
+    foreach (\Drupal::state()->get('courier_system_template_collections', []) as $mail_id => $template_collection_id) {
+      if ($template_collection = TemplateCollection::load($template_collection_id)) {
+        $template_collections[$mail_id] = $template_collection;
+      }
+    }
+
+    // List of checked mail IDs.
+    $checkboxes = [];
+    foreach ($form_state->getValue(['list', 'checkboxes']) as $id => $checked) {
+      if ($checked) {
+        $checkboxes[] = $id;
+      }
+    }
+
+    // Master override.
+    $config->set('master', (boolean) $form_state->getValue('master'));
+
+    $operation = $form_state->getValue('operation');
+    $override = $config->get('override');
+    foreach ($checkboxes as $mail_id) {
+      if (isset($template_collections[$mail_id])) {
+        if (in_array($operation, ['enable', 'disable'])) {
+          $enable = $operation == 'enable';
+          $override[$mail_id] = $enable;
+          $message = $enable ? $this->t('Messages enabled.') : $this->t('Messages disabled.');
         }
-        else {
-          $copy_core = TRUE;
-          $template_collection = TemplateCollection::create();
-
-          // Create global context for accounts if it does not exist.
-          if (!$courier_context = CourierContext::load('courier_system_user')) {
-            $courier_context = CourierContext::create([
-              'label' => t('Courier System: Account'),
-              'id' => 'courier_system_user',
-              'tokens' => ['user']
-            ]);
-            $courier_context->save();
-          }
-          $template_collection->setContext($courier_context);
-
-          // @todo set owner when DER can reference configs.
-          // See issue: https://www.drupal.org/node/2555027
-          if ($template_collection->save()) {
-            $template_collection_ids[$mail_id] = $template_collection->id();
-            $this->courierManager->addTemplates($template_collection);
-            $template_collection->save();
-          }
+        elseif ($operation == 'delete') {
+          $template_collections[$mail_id]->delete();
+          unset($template_collections[$mail_id]);
+          unset($override[$mail_id]);
+          $message = $this->t('Messages deleted');
         }
-
-        if ($copy_core && $template_collection instanceof TemplateCollectionInterface) {
-          // Only user is supported at this time.
-          $module = 'user';
-          if (array_key_exists($mail_id, $mails[$module])) {
-            $key = substr($mail_id, strlen($module . '_'));
-            $user_mails = $this->config('user.mail');
-            $mail = $user_mails->get($key);
-
-            /** @var \Drupal\courier\Entity\Email $courier_email */
-            if ($courier_email = $template_collection->getTemplate('courier_email')) {
-              foreach ($mail as &$value) {
-                $value = nl2br($value);
-                $value = str_replace('[user:name]', '[identity:label]', $value);
-              }
-
-              $courier_email
-                ->setSubject($mail['subject'])
-                ->setBody($mail['body'])
-                ->save();
-            }
-          }
+        elseif ($operation == 'copy_email') {
+          $this->copyCoreToCourierEmail($template_collections[$mail_id], $mail_id);
+          $message = $this->t('Messages copied from Drupal to Courier.');
         }
       }
     }
 
-    \Drupal::state()->set('courier_system_template_collections', $template_collection_ids);
-
     $config
-      ->set('master', (boolean) $form_state->getValue('master'))
       ->set('override', $override)
       ->save();
 
-    drupal_set_message(t('Settings saved.'));
+    // Save IDs for remaining existent template collections.
+    $template_collection_ids = [];
+    foreach ($template_collections as $mail_id => $template_collection) {
+      $template_collection_ids[$mail_id] = $template_collection->id();
+    }
+    \Drupal::state()->set('courier_system_template_collections', $template_collection_ids);
+
+    drupal_set_message($message);
+  }
+
+  /**
+   * Submit handler for create messages table.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   */
+  public function submitCreateMessages(array &$form, FormStateInterface $form_state) {
+    $config = $this->config('courier_system.settings');
+    $override = $config->get('override');
+    $template_collection_ids = \Drupal::state()->get('courier_system_template_collections', []);
+
+    // Create template collections.
+    foreach ($form_state->getValue('table') as $mail_id => $create) {
+      if ($create) {
+        $template_collection = TemplateCollection::create();
+
+        // Create global context for accounts if it does not exist.
+        /** @var \Drupal\courier\CourierContextInterface $courier_context */
+        if (!$courier_context = CourierContext::load('courier_system_user')) {
+          $courier_context = CourierContext::create([
+            'label' => t('Courier System: Account'),
+            'id' => 'courier_system_user',
+            'tokens' => ['user']
+          ]);
+          $courier_context->save();
+        }
+        $template_collection->setContext($courier_context);
+
+        // @todo set owner when DER can reference configs.
+        // See issue: https://www.drupal.org/node/2555027
+        if ($template_collection->save()) {
+          $template_collection_ids[$mail_id] = $template_collection->id();
+          $this->courierManager->addTemplates($template_collection);
+          $this->copyCoreToCourierEmail($template_collection, $mail_id);
+          $template_collection->save();
+        }
+
+        $override[$mail_id] = TRUE;
+        $template_collection_ids[$mail_id] = $template_collection->id();
+      }
+    }
+
+    $config
+      ->set('override', $override)
+      ->save();
+
+    \Drupal::state()->set('courier_system_template_collections', $template_collection_ids);
+  }
+
+  /**
+   * Copy email contents from Drupal to Courier email templates.
+   *
+   * Template collection and email template must be created prior to calling.
+   *
+   * @param \Drupal\courier\TemplateCollectionInterface $template_collection
+   *   A template collection entity.
+   * @param string $mail_id
+   *   A mail ID as defined in $this->getSystemMails().
+   */
+  protected function copyCoreToCourierEmail(TemplateCollectionInterface $template_collection, $mail_id) {
+    // Only user is supported at this time.
+    $key = substr($mail_id, strlen('user_'));
+    $user_mails = $this->config('user.mail');
+    $mail = $user_mails->get($key);
+
+    /** @var \Drupal\courier\Entity\Email $courier_email */
+    if ($courier_email = $template_collection->getTemplate('courier_email')) {
+      foreach ($mail as &$value) {
+        $value = nl2br($value);
+        $value = str_replace('[user:name]', '[identity:label]', $value);
+      }
+
+      $courier_email
+        ->setSubject($mail['subject'])
+        ->setBody($mail['body'])
+        ->save();
+    }
   }
 
 }

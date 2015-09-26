@@ -32,6 +32,9 @@ class TemplateCollectionList extends FormElement {
       '#process' => array(
         [$class, 'processTemplateCollectionList'],
       ),
+      '#element_validate' => [
+        [$class, 'validateTemplateCollectionList'],
+      ],
       // Items can be any non-zero key. Forms will return this key for keys of
       // checkboxes in $form_element['checkboxes'].
       '#items' => [],
@@ -50,6 +53,14 @@ class TemplateCollectionList extends FormElement {
       '#attributes' => [
         'class' => ['template_collection_list'],
       ],
+    ];
+
+    // Add empty checkboxes form item. This will ensure 'checkboxes' always
+    // exists in $form_state values. This is only an issue if there are no
+    // checkboxes rendered initially (list is empty).
+    $element['checkboxes'] = [
+      '#type' => 'checkboxes',
+      '#options' => NULL,
     ];
 
     if ($element['#checkboxes']) {
@@ -91,12 +102,14 @@ class TemplateCollectionList extends FormElement {
         ];
       }
 
-      $row['operations']['data'] = [
-        '#type' => 'operations',
-        '#links' => $setting['#operations'],
-      ];
+      if (!empty($setting['#operations'])) {
+        $row['operations']['data'] = [
+          '#type' => 'operations',
+          '#links' => $setting['#operations'],
+        ];
+      }
 
-      $row['title']['#markup'] = '<h1>' . t('@label', $t_args) . '</h1>';
+      $row['title']['#markup'] = '<h2>' . t('@label', $t_args) . '</h2>';
 
       if (isset($setting['#description'])) {
         $row['description']['#markup'] = '<p>' . $setting['#description'] . '</p>';

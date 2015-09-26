@@ -7,10 +7,12 @@
 
 namespace Drupal\courier;
 
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
+
 /**
  * Provides an interface defining a courier_context entity.
  */
-interface CourierContextInterface {
+interface CourierContextInterface extends ConfigEntityInterface {
 
   /**
    * Get token names.
