@@ -28,7 +28,7 @@ class EmailForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state, EmailInterface $email = NULL) {
-    $form = parent::form($form, $form_state, $email);
+    $form = parent::form($form, $form_state);
     /** @var \Drupal\courier\Entity\Email $email */
     $email = $this->entity;
 

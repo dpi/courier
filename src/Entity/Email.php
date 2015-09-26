@@ -18,7 +18,7 @@ use Drupal\courier\Exception\ChannelFailure;
  *
  * @ContentEntityType(
  *   id = "courier_email",
- *   label = @Translation("Composed Email"),
+ *   label = @Translation("Email"),
  *   handlers = {
  *     "form" = {
  *       "default" = "Drupal\courier\Form\EmailForm",
