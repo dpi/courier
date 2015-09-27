@@ -4,7 +4,7 @@ entity.courier_template_collection.channel:
     _controller: '\Drupal\courier\Controller\ChannelFormController::template'
     _title: 'Edit template'
   requirements:
-    _permission: 'administer courier'
+    _entity_access: 'courier_template_collection.templates'
   options:
     parameters:
       courier_template_collection:

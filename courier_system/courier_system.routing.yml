@@ -4,4 +4,4 @@ courier_system.config:
     _form: '\Drupal\courier_system\Form\Settings'
     _title: 'Courier System settings'
   requirements:
-    _permission: 'administer courier'
+    _permission: 'administer account settings'

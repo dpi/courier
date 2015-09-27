@@ -1,7 +1,25 @@
 <?php
 
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\courier\TemplateCollectionInterface;
 use Drupal\user\Entity\User;
 use Drupal\courier\Entity\TemplateCollection;
+
+/**
+ * Implements hook_entity_access().
+ */
+function courier_system_entity_access(EntityInterface $entity, $operation, AccountInterface $account, $langcode) {
+  if ($operation == 'templates' && $entity instanceof TemplateCollectionInterface) {
+    // Determine if template collection belongs to courier_system.
+    $template_collection_ids = \Drupal::state()->get('courier_system_template_collections', []);
+    if (!$entity->isNew() && in_array($entity->id(), $template_collection_ids)) {
+      return AccessResult::allowedIfHasPermission($account, 'administer account settings');
+    }
+  }
+  return AccessResult::neutral();
+}
 
 /**
  * Implements hook_mail_alter().
@@ -36,3 +54,4 @@ function courier_system_mail_alter(&$message) {
     }
   }
 }
+
