@@ -130,17 +130,9 @@ class Settings extends ConfigFormBase {
     $form = parent::buildForm($form, $form_state);
 
     $config = $this->config('courier_system.settings');
-    $master = $config->get('master');
     $override = $config->get('override');
 
     $template_collection_ids = \Drupal::state()->get('courier_system_template_collections', []);
-
-    $form['master'] = [
-      '#title' => $this->t('Master enable'),
-      '#type' => 'checkbox',
-      '#default_value' => !empty($master),
-      '#weight' => -100,
-    ];
 
     // Actions.
     $form['actions'] = [
@@ -254,9 +246,6 @@ class Settings extends ConfigFormBase {
         $checkboxes[] = $id;
       }
     }
-
-    // Master override.
-    $config->set('master', (boolean) $form_state->getValue('master'));
 
     $operation = $form_state->getValue('operation');
     $override = $config->get('override');

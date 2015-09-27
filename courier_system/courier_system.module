@@ -11,7 +11,7 @@ function courier_system_mail_alter(&$message) {
   $settings = \Drupal::config('courier_system.settings');
   $override = $settings->get('override');
 
-  if ($settings->get('master') && !empty($override[$mail_id])) {
+  if (!empty($override[$mail_id])) {
     // Cancel sending.
     $message['send'] = FALSE;
 
