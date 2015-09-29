@@ -58,4 +58,44 @@ class ChannelFormController extends ControllerBase implements ContainerInjection
     return $render;
   }
 
-}
+  public function tokens(Request $request, TemplateCollectionInterface $courier_template_collection) {
+    $template_collection = $courier_template_collection;
+
+    $render['tokens'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Tokens'),
+    ];
+
+    $tokens = ($context = $template_collection->getContext()) ? $context->getTokens() : ['identity'];
+    if (\Drupal::moduleHandler()->moduleExists('token')) {
+      $render['tokens']['list'] = [
+        '#theme' => 'token_tree',
+        '#token_types' => $tokens,
+      ];
+    }
+    else {
+      // Add global token types.
+      $token_info = \Drupal::token()->getInfo();
+      foreach ($token_info['types'] as $type => $type_info) {
+        if (empty($type_info['needs-data'])) {
+          $tokens[] = $type;
+        }
+      }
+
+      $render['tokens']['list'] = [
+        '#markup' => $this->t('Available tokens: @token_types', ['@token_types' => implode(', ', $tokens)]),
+      ];
+    }
+
+    if ($request->request->get('js')) {
+      $selector = '.template_collection[template_collection=' . $template_collection->id() . '] .properties_container';
+      $response = new AjaxResponse();
+      $response
+        ->addCommand(new HtmlCommand($selector, $render));
+      return $response;
+    }
+
+    return $render;
+  }
+
+  }

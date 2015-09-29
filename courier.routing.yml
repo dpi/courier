@@ -12,6 +12,18 @@ entity.courier_template_collection.channel:
       courier_channel:
         type: 'courier_channel'
 
+entity.courier_template_collection.tokens:
+  path: '/courier/collection/{courier_template_collection}/tokens'
+  defaults:
+    _controller: '\Drupal\courier\Controller\ChannelFormController::tokens'
+    _title: 'Token list'
+  requirements:
+    _entity_access: 'courier_template_collection.templates'
+  options:
+    parameters:
+      courier_template_collection:
+        type: entity:courier_template_collection
+
 entity.courier_email.canonical:
   path: '/courier/email/{courier_email}'
   defaults:

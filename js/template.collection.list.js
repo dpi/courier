@@ -8,8 +8,10 @@
       $('.template_collection[template_collection]').once('courier_template').each(function () {
         var $tc = $(this);
 
-        $(this).append('<div class="editor_container ui bottom attached segment " />');
+        $(this).append('<div class="editor_container ui attached segment " />');
+        $(this).append('<div class="properties_container ui bottom attached segment " />');
         $tc.find('.editor_container').hide();
+        $tc.find('.properties_container').hide();
 
         $tc.find('ul.templates a').each(function() {
           var template_entity_type = $(this).attr('entity_type');
@@ -18,6 +20,12 @@
           var url = 'courier/collection/' + $tc.attr('template_collection') + '/template/' + template_entity_type;
           Drupal.ajax({
             url: Drupal.url(url),
+            event: 'click',
+            progress: {type: 'fullscreen'},
+            element: $(this)
+          });
+          Drupal.ajax({
+            url: Drupal.url('courier/collection/' + $tc.attr('template_collection') + '/tokens'),
             event: 'click',
             progress: {type: 'fullscreen'},
             element: $(this)
@@ -40,11 +48,13 @@
       $tc.find('.editor').hide();
       $tc.find('.editor.' + channel).show();
       $tc.find('.editor_container').show();
+      $tc.find('.properties_container').show();
       var $a = $tc.find('ul.templates a');
       $a.addClass('blue');
     }
     if (response.operation == 'close') {
       $tc.find('.editor_container').hide();
+      $tc.find('.properties_container').hide();
       $tc.find('ul.templates a').removeClass('active');
       $tc.find('.editor.' + channel).empty();
     }

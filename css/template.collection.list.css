@@ -40,7 +40,7 @@
   border: none;
 }
 
-.editor_container {
+.editor_container, .properties_container {
   box-sizing: inherit;
 }
 
