@@ -344,7 +344,7 @@ class Settings extends ConfigFormBase {
    * @param string $mail_id
    *   A mail ID as defined in $this->getSystemMails().
    */
-  protected function copyCoreToCourierEmail(TemplateCollectionInterface $template_collection, $mail_id) {
+  protected function copyCoreToCourierEmail(TemplateCollectionInterface &$template_collection, $mail_id) {
     // Only user is supported at this time.
     $key = substr($mail_id, strlen('user_'));
     $user_mails = $this->config('user.mail');
@@ -359,8 +359,9 @@ class Settings extends ConfigFormBase {
 
       $courier_email
         ->setSubject($mail['subject'])
-        ->setBody($mail['body'])
-        ->save();
+        ->setBody($mail['body']);
+
+      $template_collection->setTemplate($courier_email);
     }
   }
 
