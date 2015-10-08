@@ -10,7 +10,7 @@ use Drupal\courier\Entity\TemplateCollection;
 /**
  * Implements hook_entity_access().
  */
-function courier_system_entity_access(EntityInterface $entity, $operation, AccountInterface $account, $langcode) {
+function courier_system_entity_access(EntityInterface $entity, $operation, AccountInterface $account) {
   if ($operation == 'templates' && $entity instanceof TemplateCollectionInterface) {
     // Determine if template collection belongs to courier_system.
     $template_collection_ids = \Drupal::state()->get('courier_system_template_collections', []);
