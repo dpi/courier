@@ -102,7 +102,10 @@ class CourierManager implements CourierManagerInterface {
           $plugin->applyIdentity($message, $identity);
         }
         catch (IdentityException $e) {
-          \Drupal::logger('courier')->debug('Identity %identity could not be applied to %channel.', $t_args);
+          \Drupal::logger('courier')->notice(
+            'Identity %identity could not be applied to %channel: @message.',
+            $t_args + ['@message' => $e->getMessage()]
+          );
           continue;
         }
 
