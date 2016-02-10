@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Route;
 use Drupal\courier\Service\IdentityChannelManagerInterface;
 
 /**
- * Checks new registrations are permitted on an event.
+ * Checks if user can send to a channel.
  */
 class ComposeAccessCheck implements AccessInterface {
 
@@ -37,7 +37,7 @@ class ComposeAccessCheck implements AccessInterface {
   }
 
   /**
-   * Checks new registrations are permitted on an event.
+   * Checks if user can send to a channel.
    */
   public function access(Route $route, RouteMatchInterface $route_match, AccountInterface $account) {
     $requirement = $route->getRequirement('_courier_compose');
@@ -45,6 +45,7 @@ class ComposeAccessCheck implements AccessInterface {
 
     $channels = [];
     if ($requirement == '*') {
+      // Check if user can send to *any* channel.
       $channels = array_keys($channels_all);
     }
     else if ($courier_channel = $route_match->getParameter('courier_channel')) {
