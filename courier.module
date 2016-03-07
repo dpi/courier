@@ -3,6 +3,7 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\courier\Entity\TemplateCollection;
 use Drupal\courier\ChannelInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 
 /**
  * Implements hook_entity_predelete().
@@ -16,6 +17,12 @@ function courier_entity_predelete(EntityInterface $entity) {
         ->removeTemplate($entity->getEntityTypeId())
         ->save();
     }
+  }
+
+  // Postgres has strict type checks.
+  // See https://github.com/dpi/rng/issues/50
+  if (!$entity instanceof ContentEntityInterface) {
+    return;
   }
 
   // Remove template collections if owner entity is deleted.
