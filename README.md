@@ -1,6 +1,8 @@
 Courier provides a framework to send messages to identities.
 
-Copyright (C) 2015 Daniel Phin (@dpi)
+Copyright (C) 2016 Daniel Phin (@dpi)
+
+[![Build Status](https://travis-ci.org/dpi/courier.svg?branch=master)](https://travis-ci.org/dpi/courier)
 
 # License
 

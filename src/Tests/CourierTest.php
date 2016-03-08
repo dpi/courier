@@ -17,7 +17,7 @@ use Drupal\entity_test\Entity\EntityTest;
 /**
  * Courier test.
  *
- * @group Courier
+ * @group courier
  */
 class CourierTest extends KernelTestBase {
 
