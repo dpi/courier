@@ -22,13 +22,13 @@
             url: Drupal.url(url),
             event: 'click',
             progress: {type: 'fullscreen'},
-            element: $(this)
+            element: this
           });
           Drupal.ajax({
             url: Drupal.url('courier/collection/' + $tc.attr('template_collection') + '/tokens'),
             event: 'click',
             progress: {type: 'fullscreen'},
-            element: $(this)
+            element: this
           });
           $(this).on('click', function() {
             $(this).closest('ul').find('a').removeClass('active');
