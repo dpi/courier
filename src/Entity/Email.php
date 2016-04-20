@@ -99,7 +99,22 @@ class Email extends ChannelBase implements EmailInterface {
    * {@inheritdoc}
    */
   public function setBody($body) {
-    $this->set('body', ['value' => $body]);
+    $this->get('body')->value = $body;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBodyFormat() {
+    return $this->get('body')->format;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setBodyFormat($format) {
+    $this->get('body')->format = $format;
     return $this;
   }
 

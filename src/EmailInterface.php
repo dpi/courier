@@ -90,4 +90,23 @@ interface EmailInterface extends ContentEntityInterface, ChannelInterface {
    */
   public function setBody($body);
 
+  /**
+   * Returns the email body format.
+   *
+   * @return string
+   *   Format of the email body.
+   */
+  public function getBodyFormat();
+
+  /**
+   * Sets the email body format.
+   *
+   * @param string $format
+   *   The email body format.
+   *
+   * @return \Drupal\courier\EmailInterface
+   *   Returns email for chaining.
+   */
+  public function setBodyFormat($format);
+
 }
