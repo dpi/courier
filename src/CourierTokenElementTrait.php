@@ -27,7 +27,7 @@ trait CourierTokenElementTrait {
    * @see ::courierTokenElement().
    */
   public function templateCollectionTokenElement(TemplateCollectionInterface $template_collection) {
-    $tokens = ($context = $template_collection->getContext()) ? $context->getTokens() : ['identity'];
+    $tokens = ($context = $template_collection->getContext()) ? $context->getTokens() : [];
     return $this->courierTokenElement($tokens);
   }
 
@@ -45,7 +45,9 @@ trait CourierTokenElementTrait {
    *   A render array.
    */
   public function courierTokenElement($tokens = []) {
-    $tokens = ['identity'] + $tokens;
+    if (!in_array('identity', $tokens)) {
+      $tokens[] = 'identity';
+    }
 
     if (\Drupal::moduleHandler()->moduleExists('token')) {
       return [
@@ -60,6 +62,10 @@ trait CourierTokenElementTrait {
         if (empty($type_info['needs-data'])) {
           $tokens[] = $type;
         }
+      }
+
+      foreach ($tokens as &$token) {
+        $token = '[' . $token . ':*]';
       }
 
       return [

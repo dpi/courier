@@ -37,6 +37,19 @@ Courier was designed for use with RNG (https://drupal.org/project/rng).
 
 Courier bundles an Email channel, and a plugin which links it to Drupal users.
 
+# Installation
+
+Courier is primarily an API module. You don't typically need to configure
+the module as dependent modules will do that for you.
+
+## Optional integration
+
+__Token__
+
+It is highly recommended to install the contrib Token module 
+(https://drupal.org/project/token). It automatically adds an highly improved 
+token selection interface to message edit forms.
+
 # Terms
 
  *  __Channel__: a template entity type. The entity type implements
