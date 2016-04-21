@@ -12,6 +12,7 @@ use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\PrependCommand;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\courier\CourierTokenElementTrait;
 use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\courier\Ajax\CourierTemplate;
 use Drupal\courier\Form\TemplateEditForm;
@@ -22,6 +23,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Controller for channels.
  */
 class ChannelFormController extends ControllerBase implements ContainerInjectionInterface {
+
+  use CourierTokenElementTrait;
 
   /**
    * Gets the template form for a channel in a template collection.
@@ -62,30 +65,9 @@ class ChannelFormController extends ControllerBase implements ContainerInjection
     $template_collection = $courier_template_collection;
 
     $render['tokens'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Tokens'),
+      '#type' => 'container',
     ];
-
-    $tokens = ($context = $template_collection->getContext()) ? $context->getTokens() : ['identity'];
-    if (\Drupal::moduleHandler()->moduleExists('token')) {
-      $render['tokens']['list'] = [
-        '#theme' => 'token_tree',
-        '#token_types' => $tokens,
-      ];
-    }
-    else {
-      // Add global token types.
-      $token_info = \Drupal::token()->getInfo();
-      foreach ($token_info['types'] as $type => $type_info) {
-        if (empty($type_info['needs-data'])) {
-          $tokens[] = $type;
-        }
-      }
-
-      $render['tokens']['list'] = [
-        '#markup' => $this->t('Available tokens: @token_types', ['@token_types' => implode(', ', $tokens)]),
-      ];
-    }
+    $render['tokens']['list'] = $this->templateCollectionTokenElement($template_collection);
 
     if ($request->request->get('js')) {
       $selector = '.template_collection[template_collection=' . $template_collection->id() . '] .properties_container';

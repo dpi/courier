@@ -11,11 +11,14 @@ use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\courier\EmailInterface;
 use Drupal\courier\Entity\TemplateCollection;
+use Drupal\courier\CourierTokenElementTrait;
 
 /**
  * Form controller for email.
  */
 class EmailForm extends ContentEntityForm {
+
+  use CourierTokenElementTrait;
 
   /**
    * The courier_email entity.
@@ -29,6 +32,7 @@ class EmailForm extends ContentEntityForm {
    */
   public function form(array $form, FormStateInterface $form_state, EmailInterface $email = NULL) {
     $form = parent::form($form, $form_state);
+
     /** @var \Drupal\courier\Entity\Email $email */
     $email = $this->entity;
 
@@ -36,35 +40,16 @@ class EmailForm extends ContentEntityForm {
       $form['#title'] = $this->t('Edit email');
     }
 
+    $template_collection = TemplateCollection::getTemplateCollectionForTemplate($email);
     $form['tokens'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Tokens'),
+      '#type' => 'container',
       '#weight' => 51,
     ];
-    $template_collection = TemplateCollection::getTemplateCollectionForTemplate($email);
 
-    $tokens = ($context = $template_collection->getContext()) ? $context->getTokens() : ['identity'];
-    if ($this->moduleHandler->moduleExists('token')) {
-      $form['tokens']['list'] = [
-        '#theme' => 'token_tree',
-        '#token_types' => $tokens,
-      ];
-    }
-    else {
-      // Add global token types.
-      $token_info = \Drupal::token()->getInfo();
-      foreach ($token_info['types'] as $type => $type_info) {
-        if (empty($type_info['needs-data'])) {
-          $tokens[] = $type;
-        }
-      }
-
-      $form['tokens']['list'] = [
-        '#markup' => $this->t('Available tokens: @token_types', ['@token_types' => implode(', ', $tokens)]),
-      ];
-    }
-
-    $form['tokens']['help']['#markup'] = '<p>' . $this->t('Tokens are replaced in subject and body fields.') . '</p>';
+    $form['tokens']['list'] = $this->templateCollectionTokenElement($template_collection);
+    $form['tokens']['help']['#prefix'] = '<p>';
+    $form['tokens']['help']['#markup'] = $this->t('Tokens are replaced in subject and body fields.');
+    $form['tokens']['help']['#suffix'] = '</p>';
 
     return $form;
   }

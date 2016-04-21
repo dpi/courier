@@ -11,6 +11,7 @@ use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormBase;
+use Drupal\courier\CourierTokenElementTrait;
 use Drupal\courier\Entity\TemplateCollection;
 use Drupal\courier\MessageQueueItemInterface;
 use Drupal\user\Entity\User;
@@ -24,6 +25,8 @@ use Drupal\courier\Service\CourierManagerInterface;
  * Create a message.
  */
 class MessageForm extends FormBase {
+
+  use CourierTokenElementTrait;
 
   /**
    * The RNG event manager.
@@ -152,30 +155,11 @@ class MessageForm extends FormBase {
 
     // Tokens.
     $form['tokens'] = [
-      '#type' => 'details',
+      '#type' => 'container',
       '#title' => $this->t('Tokens'),
       '#weight' => 51,
     ];
-    $tokens = ['identity'];
-    if (\Drupal::moduleHandler()->moduleExists('token')) {
-      $form['tokens']['list'] = [
-        '#theme' => 'token_tree',
-        '#token_types' => $tokens,
-      ];
-    }
-    else {
-      // Add global token types.
-      $token_info = \Drupal::token()->getInfo();
-      foreach ($token_info['types'] as $type => $type_info) {
-        if (empty($type_info['needs-data'])) {
-          $tokens[] = $type;
-        }
-      }
-
-      $form['tokens']['list'] = [
-        '#markup' => $this->t('Available tokens: @token_types', ['@token_types' => implode(', ', $tokens)]),
-      ];
-    }
+    $form['tokens']['list'] = $this->courierTokenElement();
 
     $form['actions'] = ['#type' => 'actions'];
     $form['actions']['submit'] = [
