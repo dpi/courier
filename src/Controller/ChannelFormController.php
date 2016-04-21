@@ -69,7 +69,7 @@ class ChannelFormController extends ControllerBase implements ContainerInjection
     $tokens = ($context = $template_collection->getContext()) ? $context->getTokens() : ['identity'];
     if (\Drupal::moduleHandler()->moduleExists('token')) {
       $render['tokens']['list'] = [
-        '#theme' => 'token_tree',
+        '#theme' => 'token_tree_link',
         '#token_types' => $tokens,
       ];
     }
