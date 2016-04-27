@@ -125,7 +125,6 @@ class TemplateEditForm extends FormBase {
       '#type' => 'submit',
       '#value' => t('Cancel'),
       '#submit' => ['::cancelForm'],
-      '#limit_validation_errors' => TRUE,
     ];
 
     return $form;
