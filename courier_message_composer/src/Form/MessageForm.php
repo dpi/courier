@@ -110,9 +110,8 @@ class MessageForm extends FormBase {
       '#required' => TRUE,
     ];
 
-    $entity_types = $this->identityChannelManager->getIdentityTypes();
-    sort($entity_types);
-    foreach ($entity_types as $entity_type_id) {
+    $channels = $this->identityChannelManager->getChannels();
+    foreach ($channels[$courier_channel->id()] as $entity_type_id) {
       $permission = 'courier_message_composer compose ' . $courier_channel->id() . ' to ' . $entity_type_id;
       if (!$this->currentUser()->hasPermission($permission)) {
         continue;
