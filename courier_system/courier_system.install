@@ -1,0 +1,27 @@
+<?php
+
+use Drupal\courier\Entity\TemplateCollection;
+
+/**
+ * Converts template collection state mapping to new global template collection
+ * configuration entities.
+ */
+function courier_system_update_8001() {
+  /** @var \Drupal\courier\Service\GlobalTemplateCollectionManagerInterface $template_collection_manager */
+  $template_collection_manager = \Drupal::service('courier.manager.global_template_collection');
+  $config_factory = \Drupal::configFactory();
+  $old_state = \Drupal::state()->get('courier_system_template_collections', []);
+
+  foreach ($old_state as $mail_key => $tcid) {
+    $gtc_id = 'courier_system.' . $mail_key;
+    $gtc_config_id = 'courier.template_collection.' . $gtc_id;
+    if (!$config_factory->get($gtc_config_id)) {
+      $tc = TemplateCollection::load($tcid);
+      $defaults = ['id' => $gtc_id];
+      $template_collection_manager
+        ->createGlobalCollectionForLocalCollection($tc, $defaults);
+    }
+  }
+
+  \Drupal::state()->delete('courier_system_template_collections');
+}

@@ -13,6 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Render\Element;
 use Drupal\courier\Entity\CourierContext;
+use Drupal\courier\Entity\GlobalTemplateCollection;
 use Drupal\courier\Entity\TemplateCollection;
 use Drupal\courier\Service\CourierManagerInterface;
 use Drupal\courier\TemplateCollectionInterface;
@@ -132,8 +133,6 @@ class Settings extends ConfigFormBase {
     $config = $this->config('courier_system.settings');
     $override = $config->get('override');
 
-    $template_collection_ids = \Drupal::state()->get('courier_system_template_collections', []);
-
     // Actions.
     $form['actions'] = [
       '#type' => 'details',
@@ -195,7 +194,9 @@ class Settings extends ConfigFormBase {
 
     foreach ($this->getSystemMails() as $module => $mails) {
       foreach ($mails as $mail_id => $definition) {
-        if (isset($template_collection_ids[$mail_id]) && $template_collection = TemplateCollection::load($template_collection_ids[$mail_id])) {
+        $gtc_id = 'courier_system.' . $mail_id;
+        if ($gtc = GlobalTemplateCollection::load($gtc_id)) {
+          $template_collection = $gtc->getTemplateCollection();
           $form['list']['#items'][$mail_id] = [
             '#title' => $this->t('@module: @title (@status)', [
               '@title' => $definition['title'],
@@ -231,11 +232,14 @@ class Settings extends ConfigFormBase {
     $config = $this->config('courier_system.settings');
 
     // Template collections keyed by mail ID.
-    /** @var TemplateCollectionInterface[] $template_collections */
-    $template_collections = [];
-    foreach (\Drupal::state()->get('courier_system_template_collections', []) as $mail_id => $template_collection_id) {
-      if ($template_collection = TemplateCollection::load($template_collection_id)) {
-        $template_collections[$mail_id] = $template_collection;
+    /** @var \Drupal\courier\Entity\GlobalTemplateCollectionInterface[] $global_template_collections */
+    $global_template_collections = [];
+    foreach ($this->getSystemMails() as $module => $mails) {
+      foreach ($mails as $mail_id => $definition) {
+        $gtc = GlobalTemplateCollection::load('courier_system.' . $mail_id);
+        if ($gtc) {
+          $global_template_collections[$mail_id] = $gtc;
+        }
       }
     }
 
@@ -250,20 +254,24 @@ class Settings extends ConfigFormBase {
     $operation = $form_state->getValue('operation');
     $override = $config->get('override');
     foreach ($checkboxes as $mail_id) {
-      if (isset($template_collections[$mail_id])) {
+      if (isset($global_template_collections[$mail_id])) {
+        $gtc = $global_template_collections[$mail_id];
+        $template_collection = $gtc->getTemplateCollection();
+
         if (in_array($operation, ['enable', 'disable'])) {
           $enable = $operation == 'enable';
           $override[$mail_id] = $enable;
           $message = $enable ? $this->t('Messages enabled.') : $this->t('Messages disabled.');
         }
         elseif ($operation == 'delete') {
-          $template_collections[$mail_id]->delete();
-          unset($template_collections[$mail_id]);
-          unset($override[$mail_id]);
           $message = $this->t('Messages deleted');
+          $gtc->delete();
+          $template_collection->delete();
+          unset($override[$mail_id]);
         }
         elseif ($operation == 'copy_email') {
-          $this->copyCoreToCourierEmail($template_collections[$mail_id], $mail_id);
+          $this->copyCoreToCourierEmail($template_collection, $mail_id);
+          $template_collection->save();
           $message = $this->t('Messages copied from Drupal to Courier.');
         }
       }
@@ -272,13 +280,6 @@ class Settings extends ConfigFormBase {
     $config
       ->set('override', $override)
       ->save();
-
-    // Save IDs for remaining existent template collections.
-    $template_collection_ids = [];
-    foreach ($template_collections as $mail_id => $template_collection) {
-      $template_collection_ids[$mail_id] = $template_collection->id();
-    }
-    \Drupal::state()->set('courier_system_template_collections', $template_collection_ids);
 
     drupal_set_message($message);
   }
@@ -294,13 +295,21 @@ class Settings extends ConfigFormBase {
   public function submitCreateMessages(array &$form, FormStateInterface $form_state) {
     $config = $this->config('courier_system.settings');
     $override = $config->get('override');
-    $template_collection_ids = \Drupal::state()->get('courier_system_template_collections', []);
 
     // Create template collections.
     foreach ($form_state->getValue('table') as $mail_id => $create) {
       if ($create) {
-        $template_collection = TemplateCollection::create();
+        $values = ['id' => 'courier_system.' . $mail_id];
+        $gtc = GlobalTemplateCollection::create($values);
+        $gtc->save();
 
+        $template_collection = $gtc->getTemplateCollection();
+
+        // Owner.
+        // @todo set owner when DER can reference configs.
+        // See issue: https://www.drupal.org/node/2555027
+
+        // Context.
         // Create global context for accounts if it does not exist.
         /** @var \Drupal\courier\CourierContextInterface $courier_context */
         if (!$courier_context = CourierContext::load('courier_system_user')) {
@@ -313,25 +322,17 @@ class Settings extends ConfigFormBase {
         }
         $template_collection->setContext($courier_context);
 
-        // @todo set owner when DER can reference configs.
-        // See issue: https://www.drupal.org/node/2555027
-        if ($template_collection->save()) {
-          $template_collection_ids[$mail_id] = $template_collection->id();
-          $this->courierManager->addTemplates($template_collection);
-          $this->copyCoreToCourierEmail($template_collection, $mail_id);
-          $template_collection->save();
-        }
+        // Contents.
+        $this->copyCoreToCourierEmail($template_collection, $mail_id);
+        $template_collection->save();
 
         $override[$mail_id] = TRUE;
-        $template_collection_ids[$mail_id] = $template_collection->id();
       }
     }
 
     $config
       ->set('override', $override)
       ->save();
-
-    \Drupal::state()->set('courier_system_template_collections', $template_collection_ids);
   }
 
   /**
@@ -359,7 +360,8 @@ class Settings extends ConfigFormBase {
 
       $courier_email
         ->setSubject($mail['subject'])
-        ->setBody($mail['body']);
+        ->setBody($mail['body'])
+        ->save();
 
       $template_collection->setTemplate($courier_email);
     }

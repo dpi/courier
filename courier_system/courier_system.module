@@ -5,7 +5,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\courier\TemplateCollectionInterface;
 use Drupal\user\Entity\User;
-use Drupal\courier\Entity\TemplateCollection;
+use Drupal\courier\Entity\GlobalTemplateCollection;
 
 /**
  * Implements hook_entity_access().
@@ -13,8 +13,13 @@ use Drupal\courier\Entity\TemplateCollection;
 function courier_system_entity_access(EntityInterface $entity, $operation, AccountInterface $account) {
   if ($operation == 'templates' && $entity instanceof TemplateCollectionInterface) {
     // Determine if template collection belongs to courier_system.
-    $template_collection_ids = \Drupal::state()->get('courier_system_template_collections', []);
-    if (!$entity->isNew() && in_array($entity->id(), $template_collection_ids)) {
+
+    /** @var \Drupal\courier\Service\GlobalTemplateCollectionManagerInterface $template_collection_manager */
+    $template_collection_manager = \Drupal::service('courier.manager.global_template_collection');
+    $gtc = $template_collection_manager
+      ->getGlobalCollectionForLocalCollection($entity);
+
+    if ($gtc && (strpos($gtc->id(), 'courier_system.') === 0)) {
       return AccessResult::allowedIfHasPermission($account, 'administer account settings');
     }
   }
@@ -33,9 +38,9 @@ function courier_system_mail_alter(&$message) {
     // Cancel sending.
     $message['send'] = FALSE;
 
-    $template_collection_ids = \Drupal::state()->get('courier_system_template_collections', []);
-    /** @var \Drupal\courier\TemplateCollectionInterface $template_collection */
-    if (array_key_exists($mail_id, $template_collection_ids) && ($template_collection = TemplateCollection::load($template_collection_ids[$mail_id]))) {
+    $gtc = GlobalTemplateCollection::load('courier_system.' . $mail_id);
+    if ($gtc) {
+      $template_collection = $gtc->getTemplateCollection();
       // _user_mail_notify() adds account param.
       // Only valid for user.module mails.
       /** @var \Drupal\Core\Session\AccountInterface $account */
