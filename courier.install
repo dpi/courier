@@ -26,3 +26,13 @@ function courier_requirements($phase) {
 
   return $requirements;
 }
+
+/**
+ * Install global template collection entity.
+ */
+function courier_update_8001() {
+  $entity_manager = \Drupal::entityTypeManager();
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = $entity_manager->getDefinition('template_collection_global');
+  $update_manager->installEntityType($entity_type);
+}
