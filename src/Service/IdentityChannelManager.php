@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Service\IdentityChannelManager.
- */
-
 namespace Drupal\courier\Service;
 
 use Drupal\Component\Plugin\FallbackPluginManagerInterface;
@@ -31,7 +26,7 @@ class IdentityChannelManager extends DefaultPluginManager implements IdentityCha
   /**
    * {@inheritdoc}
    */
-  public function getFallbackPluginId($plugin_id, array $configuration = array()) {
+  public function getFallbackPluginId($plugin_id, array $configuration = []) {
     return 'broken';
   }
 

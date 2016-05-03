@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Annotation\IdentityChannel.
- */
-
 namespace Drupal\courier\Annotation;
 
 use Drupal\Component\Annotation\Plugin;

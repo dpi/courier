@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Ajax\CourierTemplate.
- */
-
 namespace Drupal\courier\Ajax;
 
 use Drupal\Core\Ajax\CommandInterface;
@@ -31,7 +26,7 @@ class CourierTemplate implements CommandInterface {
   protected $channel;
 
   /**
-   * Operation to execute on client
+   * Operation to execute on client.
    *
    * @var string
    */

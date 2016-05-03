@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Entity\TemplateCollection.
- */
 
 namespace Drupal\courier\Entity;
 
@@ -16,7 +12,6 @@ use Drupal\courier\CourierContextInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\courier\ChannelInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\courier\TokenInterface;
 use Drupal\courier\TokenTrait;
 
 /**

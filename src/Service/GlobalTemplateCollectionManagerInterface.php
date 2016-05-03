@@ -89,7 +89,7 @@ interface GlobalTemplateCollectionManagerInterface {
    * Notify the manager that a template entity has been saved.
    *
    * This method will resynchronise template contents with the global template
-   * collection configuration
+   * collection configuration.
    *
    * @param \Drupal\courier\ChannelInterface $template
    *   A template entity.

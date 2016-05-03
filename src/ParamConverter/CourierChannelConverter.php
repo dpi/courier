@@ -1,13 +1,8 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\ParamConverter\CourierChannelConverter.
- */
-
 namespace Drupal\courier\ParamConverter;
 
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Symfony\Component\Routing\Route;
 use Drupal\Core\ParamConverter\ParamConverterInterface;
 
@@ -21,27 +16,29 @@ class CourierChannelConverter implements ParamConverterInterface {
    *
    * @var \Drupal\Core\Entity\EntityManagerInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * Constructs a new EntityConverter.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager) {
-    $this->entityManager = $entity_manager;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
    * {@inheritdoc}
    */
   public function convert($value, $definition, $name, array $defaults) {
-    if ($definition = $this->entityManager->getDefinition($value, FALSE)) {
+    if ($definition = $this->entityTypeManager->getDefinition($value, FALSE)) {
       if ($definition->isSubclassOf('\Drupal\courier\ChannelInterface')) {
         return $definition;
       }
     }
+
+    return NULL;
   }
 
   /**

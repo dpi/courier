@@ -1,24 +1,25 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Form\Settings.
- */
-
 namespace Drupal\courier\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\courier\Service\IdentityChannelManagerInterface;
 
 /**
  * Configure Courier settings.
  */
 class Settings extends ConfigFormBase {
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
 
   /**
    * The RNG event manager.
@@ -39,14 +40,14 @@ class Settings extends ConfigFormBase {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, EntityManagerInterface $entity_manager, IdentityChannelManagerInterface $identity_channel_manager) {
+  public function __construct(ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, IdentityChannelManagerInterface $identity_channel_manager) {
     parent::__construct($config_factory);
-    $this->entityManager = $entity_manager;
+    $this->entityTypeManager = $entity_type_manager;
     $this->identityChannelManager = $identity_channel_manager;
   }
 
@@ -56,7 +57,7 @@ class Settings extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('entity.manager'),
+      $container->get('entity_type.manager'),
       $container->get('plugin.manager.identity_channel')
     );
   }
@@ -102,7 +103,7 @@ class Settings extends ConfigFormBase {
 
     $identity_types = $this->identityChannelManager->getIdentityTypes();
     foreach ($identity_types as $identity_type) {
-      $entity_definition = $this->entityManager
+      $entity_definition = $this->entityTypeManager
         ->getDefinition($identity_type);
 
       $t_args = [
@@ -121,9 +122,9 @@ The first successful message for a channel will be transmitted, all subsequent c
         '#type' => 'table',
         '#header' => $header,
         '#empty' => $this->t('No channels found for @identity_type.'),
-        '#attributes' => array(
+        '#attributes' => [
           'id' => 'identity-types-' . $identity_type,
-        ),
+        ],
         '#tabledrag' => [
           [
             'action' => 'order',
@@ -150,7 +151,7 @@ The first successful message for a channel will be transmitted, all subsequent c
       );
 
       foreach ($channels as $channel => $enabled) {
-        $entity_definition = $this->entityManager
+        $entity_definition = $this->entityTypeManager
           ->getDefinition($channel);
 
         $t_args['@channel'] = $channel;
@@ -164,8 +165,8 @@ The first successful message for a channel will be transmitted, all subsequent c
           '#title_display' => 'invisible',
           '#default_value' => NULL,
           '#attributes' => [
-            'class' => ['channel-weight']
-          ]
+            'class' => ['channel-weight'],
+          ],
         ];
         $row['enabled'] = [
           '#type' => 'checkbox',

@@ -1,21 +1,15 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Form\TemplateEditForm.
- */
-
 namespace Drupal\courier\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Entity\ContentEntityTypeInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\courier\Ajax\CourierTemplate;
 use Drupal\courier\TemplateCollectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\courier\Service\IdentityChannelManagerInterface;
 use Drupal\courier\Service\CourierManagerInterface;
 
@@ -27,9 +21,9 @@ class TemplateEditForm extends FormBase {
   /**
    * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * The identity channel manager.
@@ -48,15 +42,15 @@ class TemplateEditForm extends FormBase {
   /**
    * Constructs a MessageForm object.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    * @param \Drupal\courier\Service\CourierManagerInterface $courier_manager
    *   The courier manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManagerInterface $identity_channel_manager, CourierManagerInterface $courier_manager) {
-    $this->entityManager = $entity_manager;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, IdentityChannelManagerInterface $identity_channel_manager, CourierManagerInterface $courier_manager) {
+    $this->entityTypeManager = $entity_type_manager;
     $this->identityChannelManager = $identity_channel_manager;
     $this->courierManager = $courier_manager;
   }
@@ -66,7 +60,7 @@ class TemplateEditForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager'),
+      $container->get('entity_type.manager'),
       $container->get('plugin.manager.identity_channel'),
       $container->get('courier.manager')
     );
@@ -90,7 +84,7 @@ class TemplateEditForm extends FormBase {
     if (!$message = $template_collection->getTemplate($courier_channel->id())) {
       // Create it if it does not exist.
       /** @var \Drupal\courier\ChannelInterface $message */
-      $message = $this->entityManager
+      $message = $this->entityTypeManager
         ->getStorage($courier_channel->id())
         ->create();
 
@@ -132,9 +126,9 @@ class TemplateEditForm extends FormBase {
 
   /**
    * Cancels the form.
-
-   * @param array $form
+   *    * @param array $form
    *   An associative array containing the structure of the form.
+   *
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
    */

@@ -1,32 +1,32 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Service\CourierManager.
- */
-
 namespace Drupal\courier\Service;
 
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Drupal\courier\TemplateCollectionInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\courier\Service\IdentityChannelManagerInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\courier\Entity\MessageQueueItem;
 use Drupal\courier\Exception\IdentityException;
+
 /**
- * Courier manager.
+ * The courier manager.
  */
 class CourierManager implements CourierManagerInterface {
-
-  use ContainerAwareTrait;
 
   /**
    * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
+
+  /**
+   * The logger for the Courier channel.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
 
   /**
    * The identity channel manager.
@@ -38,13 +38,16 @@ class CourierManager implements CourierManagerInterface {
   /**
    * Constructs the Courier Manager.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   *   The logger factory service.
    * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManagerInterface $identity_channel_manager) {
-    $this->entityManager = $entity_manager;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, LoggerChannelFactoryInterface $logger_factory, IdentityChannelManagerInterface $identity_channel_manager) {
+    $this->entityTypeManager = $entity_type_manager;
+    $this->logger = $logger_factory->get('courier');
     $this->identityChannelManager = $identity_channel_manager;
   }
 
@@ -55,7 +58,7 @@ class CourierManager implements CourierManagerInterface {
     foreach (array_keys($this->identityChannelManager->getChannels()) as $entity_type_id) {
       if (!$template_collection->getTemplate($entity_type_id)) {
         /** @var $template \Drupal\courier\ChannelInterface */
-        $template = $this->entityManager
+        $template = $this->entityTypeManager
           ->getStorage($entity_type_id)
           ->create();
         $template_collection->setTemplate($template);
@@ -102,7 +105,7 @@ class CourierManager implements CourierManagerInterface {
           $plugin->applyIdentity($message, $identity);
         }
         catch (IdentityException $e) {
-          \Drupal::logger('courier')->notice(
+          $this->logger->notice(
             'Identity %identity could not be applied to %channel: @message.',
             $t_args + ['@message' => $e->getMessage()]
           );
@@ -110,7 +113,7 @@ class CourierManager implements CourierManagerInterface {
         }
 
         if ($message->isEmpty()) {
-          \Drupal::logger('courier')->debug('Template @template for collection @template_collection was empty.', $t_args);
+          $this->logger->debug('Template @template for collection @template_collection was empty.', $t_args);
           continue;
         }
 
@@ -127,7 +130,7 @@ class CourierManager implements CourierManagerInterface {
 
         $violations = $message->validate();
         if ($violations->count()) {
-          \Drupal::logger('courier')->debug('Template @template for collection @template_collection did not validate.', $t_args);
+          $this->logger->debug('Template @template for collection @template_collection did not validate.', $t_args);
           continue;
         }
 
@@ -146,7 +149,7 @@ class CourierManager implements CourierManagerInterface {
       return $message_queue;
     }
 
-    \Drupal::logger('courier')->info('No messages could be sent to %identity. No messages were generated.', $t_args_base);
+    $this->logger->info('No messages could be sent to %identity. No messages were generated.', $t_args_base);
     return FALSE;
   }
 

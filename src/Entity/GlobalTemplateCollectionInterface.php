@@ -7,7 +7,7 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 /**
  * Interface for global template collection entities.
  */
-interface GlobalTemplateCollectionInterface extends ConfigEntityInterface{
+interface GlobalTemplateCollectionInterface extends ConfigEntityInterface {
 
   /**
    * Get the local Template Collection for this global template collection.

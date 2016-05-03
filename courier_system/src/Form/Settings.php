@@ -181,9 +181,9 @@ class Settings extends ConfigFormBase {
     $form['add_missing']['submit'] = [
       '#type' => 'submit',
       '#value' => t('Create messages'),
-      '#submit' => array(
+      '#submit' => [
         [$this, 'submitCreateMessages'],
-      ),
+      ],
     ];
 
     foreach ($this->getSystemMails() as $module => $mails) {

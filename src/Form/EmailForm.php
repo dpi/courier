@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Form\EmailForm.
- */
-
 namespace Drupal\courier\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
@@ -62,7 +57,7 @@ class EmailForm extends ContentEntityForm {
     $is_new = $email->isNew();
     $email->save();
 
-    $t_args = array('%label' => $email->label());
+    $t_args = ['%label' => $email->label()];
     if ($is_new) {
       drupal_set_message(t('Email %label has been created.', $t_args));
     }

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Controller\ChannelFormController.
- */
-
 namespace Drupal\courier\Controller;
 
 use Drupal\Core\Ajax\AjaxResponse;
@@ -30,7 +25,7 @@ class ChannelFormController extends ControllerBase implements ContainerInjection
    * Gets the template form for a channel in a template collection.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
-   *  The current request.
+   *   The current request.
    * @param \Drupal\courier\TemplateCollectionInterface $courier_template_collection
    *   A template collection entity.
    * @param \Drupal\Core\Entity\ContentEntityTypeInterface $courier_channel
@@ -61,6 +56,17 @@ class ChannelFormController extends ControllerBase implements ContainerInjection
     return $render;
   }
 
+  /**
+   * Get tokens for a template collection.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current request.
+   * @param \Drupal\courier\TemplateCollectionInterface $courier_template_collection
+   *   A template collection entity.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *    A AJAX response object.
+   */
   public function tokens(Request $request, TemplateCollectionInterface $courier_template_collection) {
     $template_collection = $courier_template_collection;
 
@@ -80,4 +86,4 @@ class ChannelFormController extends ControllerBase implements ContainerInjection
     return $render;
   }
 
-  }
+}

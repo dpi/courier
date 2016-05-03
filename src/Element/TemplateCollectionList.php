@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Element\TemplateCollectionList.
- */
-
 namespace Drupal\courier\Element;
 
 use Drupal\Component\Utility\Html;
@@ -29,9 +24,9 @@ class TemplateCollectionList extends FormElement {
     $class = get_class($this);
     return [
       '#input' => TRUE,
-      '#process' => array(
+      '#process' => [
         [$class, 'processTemplateCollectionList'],
-      ),
+      ],
       // Items can be any non-zero key. Forms will return this key for keys of
       // checkboxes in $form_element['checkboxes'].
       '#items' => [],
@@ -41,6 +36,20 @@ class TemplateCollectionList extends FormElement {
     ];
   }
 
+  /**
+   * Processes a template collection element.
+   *
+   * @param array $element
+   *   An associative array containing the properties and children of the
+   *   container.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   * @param array $complete_form
+   *   The complete form structure.
+   *
+   * @return array
+   *   The processed element.
+   */
   public static function processTemplateCollectionList(&$element, FormStateInterface $form_state, &$complete_form) {
     $element['#tree'] = TRUE;
     $element['#attached']['library'][] = 'courier/courier.template_collection_list';
@@ -64,7 +73,7 @@ class TemplateCollectionList extends FormElement {
       $element['template_collection_list']['#attributes']['class'][] = 'checkboxes';
     }
 
-    $entity_manager = \Drupal::entityManager();
+    $entity_type_manager = \Drupal::entityTypeManager();
     $destination = \Drupal::destination()->getAsArray();
     /** @var \Drupal\courier\Service\IdentityChannelManagerInterface $icm */
     $icm = \Drupal::service('plugin.manager.identity_channel');
@@ -137,12 +146,12 @@ class TemplateCollectionList extends FormElement {
           ->setRouteParameter('courier_channel', $channel)
           ->setOption('attributes', [
             'entity_type' => $channel,
-            'class' => ['item']
+            'class' => ['item'],
           ])
           ->setOption('query', $destination);
 
         $row['templates']['links']['#items'][] = new Link(
-          $entity_manager->getDefinition($channel)->getLabel(),
+          $entity_type_manager->getDefinition($channel)->getLabel(),
           $url
         );
       }

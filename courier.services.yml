@@ -4,14 +4,13 @@ services:
     parent: default_plugin_manager
   courier.manager:
     class: Drupal\courier\Service\CourierManager
-    arguments: ['@entity.manager', '@plugin.manager.identity_channel']
-    parent: container.trait
+    arguments: ['@entity_type.manager', '@logger.factory', '@plugin.manager.identity_channel']
   courier.manager.global_template_collection:
     class: Drupal\courier\Service\GlobalTemplateCollectionManager
     arguments: ['@keyvalue', '@courier.manager']
   courier.paramconverter.channel:
     class: Drupal\courier\ParamConverter\CourierChannelConverter
-    arguments: ['@entity.manager']
+    arguments: ['@entity_type.manager']
     tags:
       - { name: paramconverter }
     lazy: true
