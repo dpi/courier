@@ -52,4 +52,29 @@ interface ChannelInterface extends FieldableEntityInterface, TokenInterface {
    */
   public function isEmpty();
 
+  /**
+   * Import the message values from configuration values into this entity, as
+   * found in the 'courier.template.TYPE' config type. Where TYPE is the entity
+   * type ID of this entity.
+   *
+   * This method is the reverse of {@link exportTemplate()}
+   *
+   * @param mixed $content
+   *   Values from a 'courier.template.TYPE' configuration.
+   */
+  public function importTemplate($content);
+
+  /**
+   * Export the message values from this template to configuration values, as
+   * found in the 'courier.template.TYPE' config type. Where TYPE is the entity
+   * type ID of this entity.
+   *
+   * This method is the reverse of {@link importTemplate()}
+   *
+   * @return mixed
+   *   Values from this entity converted to 'courier.template.TYPE'
+   *   configuration.
+   */
+  public function exportTemplate();
+
 }

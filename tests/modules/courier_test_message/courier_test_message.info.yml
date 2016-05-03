@@ -1,0 +1,6 @@
+name: Test message
+type: module
+description: 'Provides message type for testing.'
+core: 8.x
+dependencies:
+  - user

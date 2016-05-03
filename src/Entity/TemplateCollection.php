@@ -20,11 +20,11 @@ use Drupal\courier\TokenInterface;
 use Drupal\courier\TokenTrait;
 
 /**
- * Defines a courier_template_collection entity.
+ * Defines a local template collection entity.
  *
  * @ContentEntityType(
  *   id = "courier_template_collection",
- *   label = @Translation("Template collection"),
+ *   label = @Translation("Local template collection"),
  *   base_table = "courier_template_collection",
  *   entity_keys = {
  *     "id" = "id",

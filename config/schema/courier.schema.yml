@@ -29,3 +29,35 @@ courier.context.*:
       label: 'Tokens'
       sequence:
         type: string
+
+courier.template_collection.*:
+  type: config_entity
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    provider:
+      type: string
+      label: 'Provider'
+    contexts:
+      type: sequence
+      sequence:
+        - type: string
+    templates:
+      type: sequence
+      sequence:
+        - type: mapping
+          mapping:
+            type:
+              type: string
+              label: 'Template entity type ID'
+            content:
+              type: courier.template.[%parent.type]
+
+courier.template.courier_email:
+  type: mapping
+  mapping:
+    subject:
+      type: string
+    body:
+      type: string

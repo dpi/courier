@@ -182,6 +182,24 @@ class Email extends ChannelBase implements EmailInterface {
   /**
    * {@inheritdoc}
    */
+  public function importTemplate($content) {
+    $this->setSubject($content['subject']);
+    $this->setBody($content['body']);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function exportTemplate() {
+    return [
+      'subject' => $this->getSubject(),
+      'body' => $this->getBody(),
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Email ID'))
