@@ -2,6 +2,6 @@ courier_system.config:
   path: '/admin/config/communication/courier_system'
   defaults:
     _form: '\Drupal\courier_system\Form\Settings'
-    _title: 'Courier System settings'
+    _title: 'Courier system settings'
   requirements:
     _permission: 'administer account settings'

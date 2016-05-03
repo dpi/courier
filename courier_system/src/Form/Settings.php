@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier_system\Form\Settings.
- */
-
 namespace Drupal\courier_system\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -14,7 +9,6 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Render\Element;
 use Drupal\courier\Entity\CourierContext;
 use Drupal\courier\Entity\GlobalTemplateCollection;
-use Drupal\courier\Entity\TemplateCollection;
 use Drupal\courier\Service\CourierManagerInterface;
 use Drupal\courier\TemplateCollectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -308,7 +302,6 @@ class Settings extends ConfigFormBase {
         // Owner.
         // @todo set owner when DER can reference configs.
         // See issue: https://www.drupal.org/node/2555027
-
         // Context.
         // Create global context for accounts if it does not exist.
         /** @var \Drupal\courier\CourierContextInterface $courier_context */
@@ -316,7 +309,7 @@ class Settings extends ConfigFormBase {
           $courier_context = CourierContext::create([
             'label' => t('Courier System: Account'),
             'id' => 'courier_system_user',
-            'tokens' => ['user']
+            'tokens' => ['user'],
           ]);
           $courier_context->save();
         }
