@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier_message_composer\Access\ComposeAccessCheck.
- */
-
 namespace Drupal\courier_message_composer\Access;
 
 use Drupal\Core\Routing\Access\AccessInterface;
@@ -48,7 +43,7 @@ class ComposeAccessCheck implements AccessInterface {
       // Check if user can send to *any* channel.
       $channels = array_keys($channels_all);
     }
-    else if ($courier_channel = $route_match->getParameter('courier_channel')) {
+    elseif ($courier_channel = $route_match->getParameter('courier_channel')) {
       $channels = array_key_exists($courier_channel->id(), $channels_all) ? [$courier_channel->id()] : [];
     }
 

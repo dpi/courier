@@ -1,33 +1,26 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier_message_composer\Permissions.
- */
-
 namespace Drupal\courier_message_composer;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Routing\UrlGeneratorTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\courier\Service\IdentityChannelManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Define a permission generator.
+ * Define a permission generator for Courier Message Composer.
  */
 class Permissions implements ContainerInjectionInterface {
 
   use StringTranslationTrait;
-  use UrlGeneratorTrait;
 
   /**
    * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * The identity channel manager.
@@ -39,13 +32,13 @@ class Permissions implements ContainerInjectionInterface {
   /**
    * Constructs a CourierMessageController object.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
-   * @param IdentityChannelManagerInterface $identity_channel_manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
+   * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManagerInterface $identity_channel_manager) {
-    $this->entityManager = $entity_manager;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, IdentityChannelManagerInterface $identity_channel_manager) {
+    $this->entityTypeManager = $entity_type_manager;
     $this->identityChannelManager = $identity_channel_manager;
   }
 
@@ -54,7 +47,7 @@ class Permissions implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager'),
+      $container->get('entity_type.manager'),
       $container->get('plugin.manager.identity_channel')
     );
   }
@@ -69,9 +62,9 @@ class Permissions implements ContainerInjectionInterface {
 
     $t_args = [];
     foreach ($this->identityChannelManager->getChannels() as $channel => $identity_types) {
-      $t_args['%channel'] = $this->entityManager->getDefinition($channel)->getLabel();
+      $t_args['%channel'] = $this->entityTypeManager->getDefinition($channel)->getLabel();
       foreach ($identity_types as $identity) {
-        $t_args['%identity'] = $this->entityManager->getDefinition($identity)->getLabel();
+        $t_args['%identity'] = $this->entityTypeManager->getDefinition($identity)->getLabel();
         $permissions["courier_message_composer compose $channel to $identity"] = [
           'title' => $this->t('Send %channel to %identity', $t_args),
           'description' => $this->t('Send individual messages to any %identity.', $t_args),

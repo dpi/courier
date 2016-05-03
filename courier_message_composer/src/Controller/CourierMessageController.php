@@ -1,17 +1,12 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier_message_composer\Controller\CourierMessageController.
- */
-
 namespace Drupal\courier_message_composer\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\courier\Service\IdentityChannelManagerInterface;
 
 /**
@@ -22,9 +17,9 @@ class CourierMessageController extends ControllerBase implements ContainerInject
   /**
    * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * The identity channel manager.
@@ -36,13 +31,13 @@ class CourierMessageController extends ControllerBase implements ContainerInject
   /**
    * Constructs a CourierMessageController object.
    *
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
-   *   The entity manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, IdentityChannelManagerInterface $identity_channel_manager) {
-    $this->entityManager = $entity_manager;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, IdentityChannelManagerInterface $identity_channel_manager) {
+    $this->entityTypeManager = $entity_type_manager;
     $this->identityChannelManager = $identity_channel_manager;
   }
 
@@ -60,15 +55,15 @@ class CourierMessageController extends ControllerBase implements ContainerInject
    * Return a list of links to channels.
    */
   public function channelList() {
-    $render['channels'] = array(
+    $render['channels'] = [
       '#title' => $this->t('Channels'),
       '#theme' => 'item_list',
       '#items' => [],
-    );
+    ];
 
     foreach (array_keys($this->identityChannelManager->getChannels()) as $channel) {
       if ($this->composeAnyIdentityForChannel($channel)) {
-        $definition = $this->entityManager->getDefinition($channel);
+        $definition = $this->entityTypeManager->getDefinition($channel);
         $item = [];
         $item[] = [
           '#type' => 'link',
