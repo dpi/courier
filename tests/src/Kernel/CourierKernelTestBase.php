@@ -7,7 +7,7 @@ use Drupal\KernelTests\KernelTestBase;
 /**
  * Base kernel test.
  */
-class CourierKernelBaseTest extends KernelTestBase {
+class CourierKernelTestBase extends KernelTestBase {
 
   /**
    * Modules to enable.

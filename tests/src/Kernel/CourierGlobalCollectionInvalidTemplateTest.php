@@ -12,7 +12,7 @@ use Drupal\courier\TemplateCollectionInterface;
  *
  * @group courier
  */
-class CourierGlobalCollectionInvalidTemplateTest extends CourierKernelBaseTest {
+class CourierGlobalCollectionInvalidTemplateTest extends CourierKernelTestBase {
 
   /**
    * {@inheritdoc}

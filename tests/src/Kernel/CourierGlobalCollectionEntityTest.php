@@ -10,7 +10,7 @@ use Drupal\courier\Entity\TemplateCollection;
  *
  * @group courier
  */
-class CourierGlobalCollectionEntityTest extends CourierKernelBaseTest {
+class CourierGlobalCollectionEntityTest extends CourierKernelTestBase {
 
   /**
    * @var \Drupal\courier\Service\GlobalTemplateCollectionManagerInterface

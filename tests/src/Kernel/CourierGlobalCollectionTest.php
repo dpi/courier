@@ -11,7 +11,7 @@ use Drupal\courier_test_message\Entity\TestMessage;
  *
  * @group courier
  */
-class CourierGlobalCollectionTest extends CourierKernelBaseTest {
+class CourierGlobalCollectionTest extends CourierKernelTestBase {
 
   public static $modules = ['courier_test_message', 'user'];
 
