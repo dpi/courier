@@ -4,7 +4,6 @@ namespace Drupal\Tests\courier_system\Kernel;
 
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\courier\Entity\GlobalTemplateCollection;
-use Drupal\courier\Entity\GlobalTemplateCollectionInterface;
 use Drupal\Tests\courier\Kernel\CourierKernelTestBase;
 use Drupal\user\Entity\User;
 
@@ -58,51 +57,10 @@ class CourierSystemTest extends CourierKernelTestBase {
       'status_canceled',
     ];
   }
-//
-//  /**
-//   * Test courier system override is off.
-//   */
-//  public function testUserRegisterEmailNoOverride() {
-//    $default_body = $this->randomString();
-//    $this->config('user.mail')
-//      ->set('register_admin_created.body', $default_body)
-//      ->save();
-//    $this->config('courier_system.settings')
-//      ->set('override.user_register_admin_created', FALSE) // !!
-//      ->save();
-//
-//    $body = $this->randomString();
-//    $this->createGlobalTempalteCollection('courier_system.user_register_admin_created', $body);
-//
-//    // Simulate.
-//    _user_mail_notify('register_admin_created', $this->createUser());
-//
-//    $this->cron->run();
-//    $this->assertMailString('body', $default_body, 1);
-//  }
-//
-//  /**
-//   * Test override user register account email.
-//   */
-//  public function testUserRegisterEmail() {
-//    $default_body = $this->randomString();
-//    $this->config('user.mail')
-//      ->set('register_admin_created.body', $default_body)
-//      ->save();
-//    $this->config('courier_system.settings')
-//      ->set('override.user_register_admin_created', TRUE) // !!
-//      ->save();
-//
-//    $body = $this->randomString();
-//    $this->createGlobalTempalteCollection('courier_system.user_register_admin_created', $body);
-//
-//    // Simulate.
-//    _user_mail_notify('register_admin_created', $this->createUser());
-//
-//    $this->cron->run();
-//    $this->assertMailString('body', $body, 1);
-//  }
 
+  /**
+   * Test courier system override is off.
+   */
   public function testNonOverride() {
     foreach ($this->mailIds as $id) {
       $this->config('user.settings')
@@ -132,6 +90,9 @@ class CourierSystemTest extends CourierKernelTestBase {
     }
   }
 
+  /**
+   * Test courier system override is on.
+   */
   public function testOverride() {
     foreach ($this->mailIds as $id) {
       // Turn on the email.
