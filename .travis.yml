@@ -28,7 +28,7 @@ env:
 
     # Configuration variables.
     - DRUPAL_TI_MODULE_NAME="courier"
-    - DRUPAL_TI_SIMPLETEST_GROUP="courier"
+    - DRUPAL_TI_SIMPLETEST_GROUP="courier,courier_system"
 
     # Define runners and environment vars to include before and after the
     # main runners / environment vars.
