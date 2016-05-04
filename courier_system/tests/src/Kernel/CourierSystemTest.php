@@ -67,7 +67,7 @@ class CourierSystemTest extends CourierKernelTestBase {
         ->set('notify.' . $id, TRUE)
         ->save();
       $default_body = $this->randomMachineName();
-      // Overide the user.module template.
+      // Override the user.module template.
       $this->config('user.mail')
         ->set($id . '.body', $default_body)
         ->save();
