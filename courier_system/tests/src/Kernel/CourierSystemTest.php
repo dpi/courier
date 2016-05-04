@@ -84,8 +84,8 @@ class CourierSystemTest extends CourierKernelTestBase {
 
       $this->cron->run();
 
-      // Needs to be 2 emails because some triggers will do one for user, one
-      // for admin.
+      // Email depth is two emails since some triggers will send email for user
+      // and admin.
       $this->assertMailString('body', $default_body, 2, 'Body found in non override for ' . $id);
     }
   }
@@ -100,7 +100,7 @@ class CourierSystemTest extends CourierKernelTestBase {
         ->set('notify.' . $id, TRUE)
         ->save();
       $default_body = $this->randomMachineName();
-      // Overide the user.module template.
+      // Override the user.module template.
       $this->config('user.mail')
         ->set($id . '.body', $default_body)
         ->save();
