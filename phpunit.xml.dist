@@ -11,6 +11,7 @@
         <testsuite name="Courier">
             <directory>./tests</directory>
             <directory>./courier_system/tests</directory>
+            <directory>./courier_system/tests/src/Kernel</directory>
         </testsuite>
     </testsuites>
     <!-- Filter for coverage reports. -->
@@ -20,6 +21,7 @@
             <exclude>
                 <directory>./src/Tests</directory>
                 <directory>./modules/courier_system/src/Tests</directory>
+                <directory>./courier_system/tests/src/Kernel</directory>
             </exclude>
         </whitelist>
     </filter>
