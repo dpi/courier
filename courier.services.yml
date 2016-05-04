@@ -4,7 +4,7 @@ services:
     parent: default_plugin_manager
   courier.manager:
     class: Drupal\courier\Service\CourierManager
-    arguments: ['@entity_type.manager', '@logger.factory', '@plugin.manager.identity_channel']
+    arguments: ['@entity_type.manager', '@config.factory', '@logger.factory', '@plugin.manager.identity_channel']
   courier.manager.global_template_collection:
     class: Drupal\courier\Service\GlobalTemplateCollectionManager
     arguments: ['@keyvalue', '@courier.manager']

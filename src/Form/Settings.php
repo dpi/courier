@@ -184,6 +184,17 @@ The first successful message for a channel will be transmitted, all subsequent c
       }
     }
 
+    $form['devel'] = [
+      '#type' => 'details',
+      '#open' => TRUE,
+    ];
+    $form['devel']['skip_queue'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Skip queue'),
+      '#description' => $this->t('Whether messages skip the load balancing queue and process in the same request. Only turn on this setting when debugging, do not use it on production sites.'),
+      '#default_value' => $config->get('skip_queue'),
+    ];
+
     return $form;
   }
 
@@ -203,6 +214,7 @@ The first successful message for a channel will be transmitted, all subsequent c
     }
 
     $config
+      ->set('skip_queue', $form_state->getValue('skip_queue'))
       ->set('channel_preferences', $channel_preferences)
       ->save();
 

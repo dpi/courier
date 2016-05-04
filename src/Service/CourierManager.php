@@ -5,6 +5,7 @@ namespace Drupal\courier\Service;
 use Drupal\courier\TemplateCollectionInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\courier\Entity\MessageQueueItem;
 use Drupal\courier\Exception\IdentityException;
@@ -20,6 +21,13 @@ class CourierManager implements CourierManagerInterface {
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
+
+  /**
+   * The configuration factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
 
   /**
    * The logger for the Courier channel.
@@ -40,13 +48,16 @@ class CourierManager implements CourierManagerInterface {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The configuration factory.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger factory service.
    * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, LoggerChannelFactoryInterface $logger_factory, IdentityChannelManagerInterface $identity_channel_manager) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigFactoryInterface $config_factory, LoggerChannelFactoryInterface $logger_factory, IdentityChannelManagerInterface $identity_channel_manager) {
     $this->entityTypeManager = $entity_type_manager;
+    $this->configFactory = $config_factory;
     $this->logger = $logger_factory->get('courier');
     $this->identityChannelManager = $identity_channel_manager;
   }
@@ -95,7 +106,11 @@ class CourierManager implements CourierManagerInterface {
       $t_args = $t_args_base;
       $t_args['@template'] = $template->id();
       $t_args['%channel'] = $channel;
-      if ($plugin = $this->identityChannelManager->getCourierIdentity($channel, $identity->getEntityTypeId())) {
+
+      $plugin = $this->identityChannelManager
+        ->getCourierIdentity($channel, $identity->getEntityTypeId());
+
+      if ($plugin) {
         $message = $template->createDuplicate();
         if ($message->id()) {
           throw new \Exception(sprintf('Failed to clone `%s`', $channel));
@@ -113,7 +128,7 @@ class CourierManager implements CourierManagerInterface {
         }
 
         if ($message->isEmpty()) {
-          $this->logger->debug('Template @template for collection @template_collection was empty.', $t_args);
+          $this->logger->debug('Template @template (%channel) for collection @template_collection was empty.', $t_args);
           continue;
         }
 
@@ -141,16 +156,32 @@ class CourierManager implements CourierManagerInterface {
     }
 
     if ($message_queue->getMessages()) {
-      $message_queue->save();
-      $queue = \Drupal::queue('courier_message');
-      $queue->createItem([
-        'id' => $message_queue->id(),
-      ]);
+      if ($this->getSkipQueue()) {
+        $message_queue->sendMessage();
+      }
+      else {
+        $message_queue->save();
+        $queue = \Drupal::queue('courier_message');
+        $queue->createItem([
+          'id' => $message_queue->id(),
+        ]);
+      }
       return $message_queue;
     }
 
     $this->logger->info('No messages could be sent to %identity. No messages were generated.', $t_args_base);
     return FALSE;
+  }
+
+  /**
+   * Whether message queue item should skip queue.
+   *
+   * @return bool
+   */
+  public function getSkipQueue() {
+    $skip_queue = $this->configFactory->get('courier.settings')
+      ->get('skip_queue');
+    return !empty($skip_queue);
   }
 
 }

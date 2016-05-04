@@ -72,7 +72,12 @@ class TestMessage extends ChannelBase implements TestMessageInterface {
    * {@inheritdoc}
    */
   static public function sendMessages(array $messages, $options = []) {
+    $state = \Drupal::state()->get('courier_test_message.messages', []);
     /* @var static[] $messages */
+    foreach ($messages as $message) {
+      $state[] = $message;
+    }
+    \Drupal::state()->set('courier_test_message.messages', $state);
   }
 
   /**

@@ -116,7 +116,7 @@ class CourierSystemTest extends CourierKernelTestBase {
       _user_mail_notify($id, $this->createUser());
 
       $this->cron->run();
-      $this->assertMailString('body', $body, 1, 'Body found in override for ' . $id);
+      $this->assertMailString('body', $body, 2, 'Body found in override for ' . $id);
     }
   }
 

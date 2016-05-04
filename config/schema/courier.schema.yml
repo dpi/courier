@@ -3,6 +3,9 @@ courier.settings:
   type: config_object
   label: 'Settings for Courier'
   mapping:
+    skip_queue:
+      type: boolean
+      label: 'Whether messages should be tried in the same request'
     channel_preferences:
       type: sequence
       label: 'Default channel preferences for identities'

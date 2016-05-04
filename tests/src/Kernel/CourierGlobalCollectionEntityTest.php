@@ -13,11 +13,6 @@ use Drupal\courier\Entity\TemplateCollection;
 class CourierGlobalCollectionEntityTest extends CourierKernelTestBase {
 
   /**
-   * @var \Drupal\courier\Service\GlobalTemplateCollectionManagerInterface
-   */
-  protected $gtcService;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp() {
