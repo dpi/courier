@@ -37,7 +37,7 @@ class CourierSystemTest extends CourierKernelTestBase {
   protected function setUp() {
     parent::setUp();
     $this->installConfig(['courier', 'courier_system']);
-    $this->installSchema('system', ['sequences']);
+    $this->installSchema('system', ['sequences', 'queue']);
     $this->installEntitySchema('courier_message_queue_item');
     $this->installEntitySchema('courier_template_collection');
     $this->installEntitySchema('courier_email');
