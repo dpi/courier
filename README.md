@@ -2,7 +2,7 @@ Courier provides a framework to send messages to identities.
 
 Copyright (C) 2016 Daniel Phin (@dpi)
 
-[![Build Status](https://travis-ci.org/dpi/courier.svg?branch=master)](https://travis-ci.org/dpi/courier)
+[![Build Status](https://travis-ci.org/dpi/courier.svg?branch=8.x-1.x)](https://travis-ci.org/dpi/courier)
 
 # License
 
@@ -33,7 +33,7 @@ These files are licensed under The MIT License and are denoted with the heading
 
 # About
 
-Courier was designed for use with RNG (https://drupal.org/project/rng).
+Courier was originally designed for RNG (https://drupal.org/project/rng).
 
 Courier bundles an Email channel, and a plugin which links it to Drupal users.
 
