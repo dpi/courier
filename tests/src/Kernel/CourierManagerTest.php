@@ -34,6 +34,7 @@ class CourierManagerTest extends CourierKernelTestBase {
     $this->installEntitySchema('courier_email');
     $this->installEntitySchema('courier_test_message');
     $this->installEntitySchema('user');
+    $this->installSchema('system', ['queue']);
     $this->courierManager = $this->container->get('courier.manager');
   }
 
