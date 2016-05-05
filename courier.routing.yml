@@ -63,3 +63,11 @@ courier.config:
     _title: 'Courier settings'
   requirements:
     _permission: 'administer courier'
+
+courier.admin.maintenance:
+  path: '/admin/config/communication/courier/maintenance'
+  defaults:
+    _form: '\Drupal\courier\Form\CourierMaintenanceForm'
+    _title: 'Courier maintenance'
+  requirements:
+    _permission: 'administer courier'

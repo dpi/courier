@@ -7,3 +7,13 @@ entity.courier_email.edit_form:
   route_name: entity.courier_email.edit_form
   base_route: entity.courier_email.canonical
   title: 'Edit'
+
+courier.admin.settings:
+  route_name: courier.config
+  base_route: courier.config
+  title: 'Settings'
+
+courier.admin.maintenance:
+  route_name: courier.admin.maintenance
+  base_route: courier.config
+  title: 'Maintenance'
