@@ -10,6 +10,7 @@
     <testsuites>
         <testsuite name="Courier">
             <directory>./tests</directory>
+            <directory>./src/Tests</directory>
             <directory>./courier_system/tests</directory>
         </testsuite>
     </testsuites>
