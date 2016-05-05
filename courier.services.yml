@@ -4,10 +4,13 @@ services:
     parent: default_plugin_manager
   courier.manager:
     class: Drupal\courier\Service\CourierManager
-    arguments: ['@entity_type.manager', '@config.factory', '@logger.factory', '@plugin.manager.identity_channel']
+    arguments: ['@entity_type.manager', '@config.factory', '@logger.factory', '@plugin.manager.identity_channel', '@courier.manager.message_queue']
   courier.manager.global_template_collection:
     class: Drupal\courier\Service\GlobalTemplateCollectionManager
     arguments: ['@keyvalue', '@courier.manager']
+  courier.manager.message_queue:
+    class: Drupal\courier\Service\MessageQueueManager
+    arguments: ['@logger.factory', '@plugin.manager.identity_channel']
   courier.paramconverter.channel:
     class: Drupal\courier\ParamConverter\CourierChannelConverter
     arguments: ['@entity_type.manager']

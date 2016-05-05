@@ -44,6 +44,13 @@ class CourierManager implements CourierManagerInterface {
   protected $identityChannelManager;
 
   /**
+   * The message queue service
+   *
+   * @var \Drupal\courier\Service\MessageQueueManagerInterface
+   */
+  protected $messageQueue;
+
+  /**
    * Constructs the Courier Manager.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -54,12 +61,15 @@ class CourierManager implements CourierManagerInterface {
    *   The logger factory service.
    * @param \Drupal\courier\Service\IdentityChannelManagerInterface $identity_channel_manager
    *   The identity channel manager.
+   * @param \Drupal\courier\Service\MessageQueueManagerInterface $message_queue
+   *   The message queue service.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigFactoryInterface $config_factory, LoggerChannelFactoryInterface $logger_factory, IdentityChannelManagerInterface $identity_channel_manager) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigFactoryInterface $config_factory, LoggerChannelFactoryInterface $logger_factory, IdentityChannelManagerInterface $identity_channel_manager, MessageQueueManagerInterface $message_queue) {
     $this->entityTypeManager = $entity_type_manager;
     $this->configFactory = $config_factory;
     $this->logger = $logger_factory->get('courier');
     $this->identityChannelManager = $identity_channel_manager;
+    $this->messageQueue = $message_queue;
   }
 
   /**
@@ -157,7 +167,8 @@ class CourierManager implements CourierManagerInterface {
 
     if ($message_queue->getMessages()) {
       if ($this->getSkipQueue()) {
-        $message_queue->sendMessage();
+        $this->messageQueue
+          ->sendMessage($message_queue);
       }
       else {
         $message_queue->save();

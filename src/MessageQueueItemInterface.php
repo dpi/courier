@@ -107,16 +107,4 @@ interface MessageQueueItemInterface extends ContentEntityInterface {
    */
   public function setCreatedTime($timestamp);
 
-  /**
-   * Attempts to send the messages on the entity.
-   *
-   * Attempts will halt as soon as a message is sent successfully.
-   *
-   * This entity can be deleted as soon as the message is sent.
-   *
-   * @return \Drupal\courier\ChannelInterface|FALSE
-   *   The message that was sent, or FALSE if all messages failed to send.
-   */
-  public function sendMessage();
-
 }

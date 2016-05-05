@@ -16,7 +16,7 @@ class CourierManagerTest extends CourierKernelTestBase {
 
   use AssertMailTrait;
 
-  public static $modules = ['courier_test_message', 'user', 'system', 'dblog'];
+  public static $modules = ['courier_test_message', 'user', 'system'];
 
   /**
    * @var \Drupal\courier\Service\CourierManagerInterface
@@ -35,7 +35,6 @@ class CourierManagerTest extends CourierKernelTestBase {
     $this->installEntitySchema('courier_test_message');
     $this->installEntitySchema('user');
     $this->courierManager = $this->container->get('courier.manager');
-        $this->installSchema('dblog', ['watchdog']);
   }
 
   /**

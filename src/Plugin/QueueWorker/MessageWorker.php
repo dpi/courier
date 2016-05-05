@@ -28,9 +28,11 @@ class MessageWorker extends QueueWorkerBase {
    *   - integer $id: ID of a courier_message_queue_item entity.
    */
   public function processItem($data) {
-    if ($message_queue = MessageQueueItem::load($data['id'])) {
-      $message_queue->sendMessage();
-      $message_queue->delete();
+    $message_queue = MessageQueueItem::load($data['id']);
+    if ($message_queue) {
+      /** @var \Drupal\courier\Service\MessageQueueManagerInterface $service */
+      $service = \Drupal::service('courier.manager.message_queue');
+      $service->sendMessage($message_queue);
     }
   }
 

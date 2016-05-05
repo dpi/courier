@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\courier\Entity\MessageQueueItem.
- */
-
 namespace Drupal\courier\Entity;
 
 use Drupal\Core\Entity\ContentEntityBase;
@@ -17,7 +12,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\courier\ChannelInterface;
 
 /**
- * Defines a courier_template_collection entity.
+ * Defines a Message queue item entity.
  *
  * @ContentEntityType(
  *   id = "courier_message_queue_item",
@@ -100,58 +95,6 @@ class MessageQueueItem extends ContentEntityBase implements MessageQueueItemInte
   public function setCreatedTime($timestamp) {
     $this->set('created', $timestamp);
     return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function sendMessage() {
-    $options = $this->getOptions();
-    $channel_options = array_key_exists('channels', $options) ? $options['channels'] : [];
-    unset($options['channels']);
-
-    /** @var \Drupal\courier\Service\IdentityChannelManagerInterface $icm */
-    $icm = \Drupal::service('plugin.manager.identity_channel');
-
-    // Instead of iterating over messages, get the identity' channel preferences
-    // again. This ensures preference order is up to date since significant time
-    // may have passed since adding to queue.
-    $messages = [];
-    foreach ($icm->getChannelsForIdentity($this->getIdentity()) as $channel) {
-      if ($message = $this->getMessage($channel)) {
-        $messages[] = $message;
-      }
-    }
-
-    /** @var ChannelInterface[] $messages */
-    foreach ($messages as $message) {
-      $message_options = $options;
-      // Transform options based on channel.
-      $channel = $message->getEntityTypeId();
-      if (array_key_exists($channel, $channel_options)) {
-        $message_options = array_merge($message_options, $channel_options[$channel]);
-      }
-
-      $t_args = [
-        '@channel' => $channel,
-        '@identity' => $this->getIdentity()->label(),
-      ];
-
-      try {
-        $message::sendMessages([$message], $message_options);
-        \Drupal::logger('courier')->info('Successfully sent @channel to @identity', $t_args);
-        return $message;
-      }
-      catch (\Exception $e) {
-        $t_args['@exception'] = $e->getMessage();
-        \Drupal::logger('courier')->warning('Failed to send @channel to @identity: @exception', $t_args);
-        continue;
-      }
-
-      break;
-    }
-
-    return FALSE;
   }
 
   /**
