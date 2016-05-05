@@ -56,7 +56,7 @@ courier.admin_config_communication:
   requirements:
     _permission: 'access administration pages'
 
-courier.config:
+courier.admin.settings:
   path: '/admin/config/communication/courier'
   defaults:
     _form: '\Drupal\courier\Form\Settings'

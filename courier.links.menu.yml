@@ -3,8 +3,8 @@ system.admin_config_communication:
   parent: system.admin_config
   title: Communication
 
-courier.config:
+courier.admin.settings:
   title: 'Courier settings'
   parent: system.admin_config_communication
   description: 'Manage Courier settings.'
-  route_name: courier.config
+  route_name: courier.admin.settings

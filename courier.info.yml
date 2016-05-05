@@ -2,6 +2,7 @@ name: Courier
 type: module
 description: 'Provides storage for various types of messages.'
 core: 8.x
+configure: courier.admin.settings
 dependencies:
   - text
   - dynamic_entity_reference

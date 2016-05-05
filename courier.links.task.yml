@@ -9,11 +9,11 @@ entity.courier_email.edit_form:
   title: 'Edit'
 
 courier.admin.settings:
-  route_name: courier.config
-  base_route: courier.config
+  route_name: courier.admin.settings
+  base_route: courier.admin.settings
   title: 'Settings'
 
 courier.admin.maintenance:
   route_name: courier.admin.maintenance
-  base_route: courier.config
+  base_route: courier.admin.settings
   title: 'Maintenance'
