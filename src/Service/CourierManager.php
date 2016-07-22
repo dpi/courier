@@ -153,11 +153,7 @@ class CourierManager implements CourierManagerInterface {
           ->setTokenValue('identity', $identity)
           ->applyTokens();
 
-        $violations = $message->validate();
-        if ($violations->count()) {
-          $this->logger->debug('Template @template for collection @template_collection did not validate.', $t_args);
-          continue;
-        }
+        $this->logger->debug('Template @template (%channel) added to a message queue item.', $t_args);
 
         if ($message->save()) {
           $message_queue->addMessage($message);
