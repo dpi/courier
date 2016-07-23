@@ -59,4 +59,3 @@ function courier_system_mail_alter(&$message) {
     }
   }
 }
-
