@@ -91,7 +91,7 @@ class TemplateCollectionList extends FormElement {
       $element['template_collection_list'][$id] = [
         '#type' => 'container',
         '#attributes' => [
-          'class' => 'template_collection',
+          'class' => ['template_collection'],
           'template_collection' => $template_collection->id(),
         ],
       ];
