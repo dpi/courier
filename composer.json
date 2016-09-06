@@ -1,0 +1,19 @@
+{
+  "name": "drupal/courier",
+  "description": "Provides storage for various types of messages.",
+  "type": "drupal-module",
+  "homepage": "http://drupal.org/project/courier",
+  "support": {
+    "issues": "https://github.com/dpi/courier/issues",
+    "source": "https://github.com/dpi/courier"
+  },
+  "authors": [
+    {
+      "name": "Daniel Phin",
+      "email": "pro@danielph.in",
+      "homepage": "http://danielph.in",
+      "role": "Maintainer"
+    }
+  ],
+  "license": "GPL-2.0+"
+}
