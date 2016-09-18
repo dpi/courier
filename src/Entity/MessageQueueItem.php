@@ -18,6 +18,9 @@ use Drupal\courier\ChannelInterface;
  *   id = "courier_message_queue_item",
  *   label = @Translation("Message queue item"),
  *   base_table = "courier_message_queue_item",
+ *   handlers = {
+ *     "views_data" = "Drupal\views\EntityViewsData"
+ *   },
  *   entity_keys = {
  *     "id" = "id",
  *   }
