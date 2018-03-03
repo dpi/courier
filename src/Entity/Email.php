@@ -155,7 +155,7 @@ class Email extends ChannelBase implements EmailInterface {
       $params = [
         'context' => [
           'subject' => $message->getSubject(),
-          'message' => $message->getBody(),
+          'message' => check_markup($message->getBody(), $message->getBodyFormat(), $message->language()->getId()),
         ],
       ];
 
