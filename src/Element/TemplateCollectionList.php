@@ -64,10 +64,12 @@ class TemplateCollectionList extends FormElement {
     // Add empty checkboxes form item. This will ensure 'checkboxes' always
     // exists in $form_state values. This is only an issue if there are no
     // checkboxes rendered initially (list is empty).
-    $element['checkboxes'] = [
-      '#type' => 'checkboxes',
-      '#options' => NULL,
-    ];
+    if (!$element['#checkboxes']) {
+      $element['checkboxes'] = [
+        '#type' => 'checkboxes',
+        '#options' => [],
+      ];
+    }
 
     if ($element['#checkboxes']) {
       $element['template_collection_list']['#attributes']['class'][] = 'checkboxes';
